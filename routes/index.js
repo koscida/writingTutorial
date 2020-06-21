@@ -1,13 +1,13 @@
 const express = require('express');
 const Router = express.Router();
 
-const SiteRoute = require("./root")
+const HomeRoute = require("./home")
 const PeopleRoutes = require("./people")
 const ProductsRoutes = require("./products")
 const WritingRoutes = require("./writing")
 
 // Site Index
-Router.use("/", SiteRoute)
+Router.use("/", HomeRoute)
 
 // Testing
 Router.use("/people", PeopleRoutes)

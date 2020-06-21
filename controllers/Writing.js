@@ -14,7 +14,8 @@ var Writing = {
 			ON c.chapter_id = s.chapter_id 
 			ORDER BY c.chapter_order, s.section_order 
 		`;
-		runQueryResultsHelper(req, res, SELECT_CHAPTERS_AND_SECTIONS, chaptersAndSectionsJsonTransform)
+		// console.log(SELECT_CHAPTERS_AND_SECTIONS)
+		runQueryResultsHelper(req, res, SELECT_CHAPTERS_AND_SECTIONS, transformChaptersAndSectionsJson)
 	},
 	getAllChapters: function (req, res) {
 		const SELECT_CHAPTERS = `
@@ -24,7 +25,7 @@ var Writing = {
 			FROM tutorial.chapters AS c
 			ORDER BY chapter_order
 		`;
-		runQueryResultsHelper(req, res, SELECT_CHAPTERS, chapterJsonTransform)
+		runQueryResultsHelper(req, res, SELECT_CHAPTERS, transformChapterJson)
 	},
 	getAllSections: function (req, res) {
 		const SELECT_SECTIONS = `
@@ -32,7 +33,7 @@ var Writing = {
 			FROM tutorial.sections 
 			ORDER BY section_order
 		`;
-		runQueryResultsHelper(req, res, SELECT_SECTIONS, sectionTransform)
+		runQueryResultsHelper(req, res, SELECT_SECTIONS, transformSectionJson)
 	},
 	addChapter: function (req, res) {
 		const { name, description, order } = req.query
@@ -46,22 +47,44 @@ var Writing = {
 		runQueryResultsHelper(req, res, INSERT_NEW_CHAPTER) //TODO: currently sends sql result to page, process successful insert
 	},
 	addSection: function(req, res) {
-		const { name, chapterId, order } = req.query
-		// TODO: data validation
+		const { name, chapterId, order, description } = req.query
+		// TODO: data validation and param clean
 		const INSERT_NEW_SECTION = `
 			INSERT INTO tutorial.sections
-				(section_name, chapter_id, section_order)
-			VALUES ('${name}', ${chapterId}, ${order})
+				(section_name, section_text, chapter_id, section_order)
+			VALUES ('${name}', '${description}', ${chapterId}, ${order})
 		`;
-		// console.log(INSERT_NEW_SECTION)
+		console.log(INSERT_NEW_SECTION)
 		runQueryResultsHelper(req, res, INSERT_NEW_SECTION) //TODO: process return for successful insert
-	}
+	},
+	getChapter: (req, res)  => {
+		const id = parseInt(req.params.id)
+		const SELECT_CHAPTER = `
+			SELECT * 
+			FROM tutorial.chapters 
+			WHERE chapter_id = ${id}
+		`;
+		runQueryResultsHelper(req, res, SELECT_CHAPTER, transformChapterJson)
+	},
+	getSection: (req, res)  => {
+		const id = parseInt(req.params.id)
+		const SELECT_SECTION = `
+			SELECT * 
+			FROM tutorial.sections 
+			WHERE section_id = ${id}
+		`;
+		// console.log(SELECT_SECTION)
+		runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
+	},
 };
 
 
 // TODO: move all these transformations and data modeling to an actual model
 function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
+	// console.log(SQL_QUERY)
 	var results = mysqlConnection.query(SQL_QUERY, function (error, results, fields) {
+		// console.log(results)
+		
 		// create default result object
 		let apiResult = {
 			"meta" : {
@@ -92,15 +115,15 @@ function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
 	});
 }
 
-function chapterTransformJson(resultJson) {
+function transformChapterJson(resultJson) {
 	return resultJson.map( chapter => transformChapterData(chapter) )
 }
 
-function sectionTransformJson(resultJson) {
+function transformSectionJson(resultJson) {
 	return resultJson.map( section => transformSectionData(section) )
 }
 
-function chaptersAndSectionsTransformJson(resultJson) {
+function transformChaptersAndSectionsJson(resultJson) {
 	const modResult = Object.values(resultJson.reduce( (acc, chapter) => {
 		cId = chapter.chapter_id
 		if(!acc[cId]) {
@@ -125,26 +148,28 @@ function chaptersAndSectionsTransformJson(resultJson) {
 }
 
 // TODO: OMG this is terrible, refactor when have time
-// these two functions are similar, combine into better transform? (or put into a model, geez)
+// these two functions are similar, combine into better transform? (...or put into a model, geez)
 function transformChapterData(c, includeSections = false) {
-	const newChapter = {}
-	if(c.chapter_id) newChapter.id = parseInt(c.chapter_id)
-	if(c.chapter_name) newChapter.name = c.chapter_name
-	if(c.chapter_desc) newChapter.description = Buffer.from(c.chapter_desc.data).toString()
-	if(c.chapter_order) newChapter.order = parseInt(c.chapter_order)
-	if(c.sectionsCount) newChapter.sectionsCount = parseInt(c.sectionsCount)
+	const newChapter = {
+		id 				: (c.chapter_id) ? parseInt(c.chapter_id) : null,
+		name 				: (c.chapter_name) ? c.chapter_name : '',
+		description 	: (c.chapter_desc) ? Buffer.from(c.chapter_desc.data).toString() : '',
+		order 			: (c.chapter_order) ? parseInt(c.chapter_order) : '',
+		sectionsCount 	: (c.sectionsCount) ? parseInt(c.sectionsCount) : 0,
+	}
 	if(includeSections) newChapter.sections = []
 	//console.log(newChapter)
 	return newChapter
 }
 
 function transformSectionData(s) {
-	const newSection = {}
-	if(s.section_id) newSection.id = parseInt(s.section_id)
-	if(s.section_name) newSection.name = s.section_name
-	if(s.section_order) newSection.order = parseInt(s.section_order)
-	if(s.chapter_id) newSection.chapter_id = parseInt(s.chapter_id)
-	if(s.section_text) newSection.text = Buffer.from(s.section_text.data).toString()
+	const newSection = {
+		id 			: (s.section_id) ? parseInt(s.section_id) : null,
+		name 			: (s.section_name) ? s.section_name : null,
+		order 		: (s.section_order) ? parseInt(s.section_order) : null,
+		chapterId 	: (s.chapter_id) ? parseInt(s.chapter_id) : null,
+		text 			: (s.section_text) ? Buffer.from(s.section_text.data).toString() : null,
+	}
 	//console.log(newSection)
 	return newSection
 }
