@@ -1,0 +1,35 @@
+$backgroundColorPrimary: #444;
+$backgroundColorSecondary: darken( $backgroundColorPrimary, 10% );
+$textColor: #ddd;
+
+#writingRoot {
+	background-color: $backgroundColorPrimary;
+	color: $textColor;
+	display: grid;
+	grid-template-columns: 200px auto;
+	
+	> * {
+		padding: 10px;
+	}
+}
+
+#chapterList {
+	background-color: $backgroundColorSecondary;
+	height: 100vh;
+	overflow-y: scroll;
+	
+	li {
+		&.active {
+			background-color: $backgroundColorPrimary;
+		}
+		&:hover {
+			cursor: pointer;
+		}
+		&:not(.sections) {
+			padding: 5px 10px;
+		}
+		&.sections {
+			padding-left: 10px;
+		}
+	}
+}
