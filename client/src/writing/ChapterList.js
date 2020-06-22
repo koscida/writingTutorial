@@ -1,9 +1,15 @@
 import React from 'react'
 import AddChapter from './Modals/AddChapter'
 import AddSection from './Modals/AddSection'
+import Button from 'react-bootstrap/Button'
 
 
 class ChapterList extends React.Component {
+	
+	state = {
+		showAddChapter: false,
+		showAddSection: false,
+	}
 	
 	renderListItems({id, name, sections}) {
 		const { 
@@ -42,25 +48,43 @@ class ChapterList extends React.Component {
 		</React.Fragment>
 	}
 	
+	handleAddSectionToggle = () => {
+		this.setState({showAddSection: !this.state.showAddSection})
+	}
+	
+	handleAddChapterToggle = () => {
+		this.setState({showAddChapter: !this.state.showAddChapter})
+	}
+	
+	handleSectionCreate = values => {
+		this.handleAddSectionToggle()
+		this.props.onSectionCreate(values)
+		// console.log(values)
+	}
+	
 	render() {
-		const { 
-			chapters,
-			onChapterCreate,
-			onSectionCreate
-		} = this.props
+		const { chapters, onChapterCreate } = this.props
+		const { showAddChapter, showAddSection } = this.state
 		
 		return (
 			<div id="chapterList">
+			
 				<ul key={'test'}>
 					{chapters.map( chapter => this.renderListItems(chapter) )}
 				</ul>
+				
 				<AddChapter 
 					onSave={onChapterCreate}
 				/>
+				
+				<Button variant="light" onClick={this.handleAddSectionToggle}>Add Section</Button>
 				<AddSection 
-					onSave={onSectionCreate}
+					onSectionSave={this.handleSectionCreate}
 					chapters={chapters}
+					show={showAddSection}
+					handleToggle={this.handleAddSectionToggle}
 				/>
+				
 			</div>
 		)
 	}

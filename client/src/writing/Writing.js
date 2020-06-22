@@ -95,24 +95,43 @@ class Writing extends React.Component {
 	handleSectionCreate = ({ name, description, chapterId }) => {
 		const { chapters } = this.state
 		const chap = chapters.find(c => c.id === parseInt(chapterId))
+		const order = (chap.sections.length > 0) ? chap.sections[chap.sections.length-1].order + 1 : 0
+		// console.log(order)
 		// TODO: check for ok status codes, assumes 200 rn
 		fetch(`http://localhost:5000/writing/section/add?
 			name=${name}&
 			description=${description}&
 			chapterId=${chapterId}&
-			order=${chap.sections[chap.sections.length-1].order + 1}
+			order=${order}
 		`)
 		.then(response => {
 			//console.log(response)
 			return response.json()
 		})
 		.then( ({ data }) => {
-			console.log(data)
+			// console.log(data)
 			this.getChapters();
+			this.handleSectionSelect(data.insertId)
 		})
 		.catch(error => console.log(error));
 	}
 	
+	handleSectionSave = sectionData => {
+		const { id, text } = sectionData
+		fetch(`http://localhost:5000/writing/section/edit?
+			id=${id}&
+			text=${text}
+		`)
+		.then(response => {
+			//console.log(response)
+			return response.json()
+		})
+		.then( ({ data }) => {
+			// console.log(data)
+			this.getChapters();
+		})
+		.catch(error => console.log(error));
+	}
 	
 	render () {
 		const { chapters, selected } = this.state
@@ -125,6 +144,7 @@ class Writing extends React.Component {
 		} else if(selected.section) {
 			view = <SectionView 
 				sectionData={selected.sectionData}
+				onSave={this.handleSectionSave}
 			/>
 		}
 		

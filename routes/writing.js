@@ -11,6 +11,7 @@ Router.get('/chapter/add', 	writingController.addChapter)
 Router.get('/chapter/:id', 	writingController.getChapter)
 Router.get('/chapter', 			writingController.getAllChapters)
 
+Router.get('/section/edit', 	writingController.editSection)
 Router.get('/section/add', 	writingController.addSection)
 Router.get('/section/:id', 	writingController.getSection)
 Router.get('/section', 			writingController.getAllSections)

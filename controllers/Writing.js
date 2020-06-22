@@ -49,12 +49,21 @@ var Writing = {
 	addSection: function(req, res) {
 		const { name, chapterId, order, description } = req.query
 		// TODO: data validation and param clean
-		const INSERT_NEW_SECTION = `
-			INSERT INTO tutorial.sections
-				(section_name, section_text, chapter_id, section_order)
-			VALUES ('${name}', '${description}', ${chapterId}, ${order})
-		`;
-		console.log(INSERT_NEW_SECTION)
+		let INSERT_NEW_SECTION = ''
+		if(description === 'null') {
+			INSERT_NEW_SECTION = `
+				INSERT INTO tutorial.sections
+					(section_name, chapter_id, section_order)
+				VALUES ('${name}', ${chapterId}, ${order})
+			`;
+		} else {
+			INSERT_NEW_SECTION = `
+				INSERT INTO tutorial.sections
+					(section_name, section_desc, chapter_id, section_order)
+				VALUES ('${name}', '${description}', ${chapterId}, ${order})
+			`;
+		}
+		// console.log(INSERT_NEW_SECTION)
 		runQueryResultsHelper(req, res, INSERT_NEW_SECTION) //TODO: process return for successful insert
 	},
 	getChapter: (req, res)  => {
@@ -76,6 +85,17 @@ var Writing = {
 		// console.log(SELECT_SECTION)
 		runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
 	},
+	editSection : (req, res) => {
+		const { id, text } = req.query
+		// TODO: data validation and param clean
+		const UPDATE_SECTION = `
+			UPDATE tutorial.sections
+			SET section_text = '${text}'
+			WHERE section_id = ${id}
+		`;
+		// console.log(UPDATE_SECTION)
+		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
+	}
 };
 
 
@@ -169,6 +189,7 @@ function transformSectionData(s) {
 		order 		: (s.section_order) ? parseInt(s.section_order) : null,
 		chapterId 	: (s.chapter_id) ? parseInt(s.chapter_id) : null,
 		text 			: (s.section_text) ? Buffer.from(s.section_text.data).toString() : null,
+		description	: (s.section_desc) ? Buffer.from(s.section_desc.data).toString() : null,
 	}
 	//console.log(newSection)
 	return newSection

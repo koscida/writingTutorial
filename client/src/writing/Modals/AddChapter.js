@@ -35,7 +35,7 @@ class AddChapter extends React.Component {
 	}
 	
 	render() {
-		const { show } = this.state
+		const { show, chapter : { name } } = this.state
 		return (
 			<>
 				<Button variant="light" onClick={this.handleToggle}>Add Chapter</Button>
@@ -49,6 +49,7 @@ class AddChapter extends React.Component {
 							<Form.Group controlId="formChapterName">
 								<Form.Label>Name</Form.Label>
 								<Form.Control 
+									required
 									type="text" 
 									placeholder="Enter name" 
 									onChange={this.handleFormChange("name")} 
@@ -72,7 +73,11 @@ class AddChapter extends React.Component {
 						<Button variant="secondary" onClick={this.handleToggle}>
 							Close
 						</Button>
-						<Button variant="primary" onClick={this.handleSave}>
+						<Button 
+							variant="primary" 
+							onClick={this.handleSave}
+							disabled={!name}
+						>
 							Save
 						</Button>
 					</Modal.Footer>
