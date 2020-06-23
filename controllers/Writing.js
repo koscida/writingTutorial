@@ -86,13 +86,22 @@ var Writing = {
 		runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
 	},
 	editSection : (req, res) => {
-		const { id, text } = req.query
+		const { id, text, name, description, chapterId } = req.query
 		// TODO: data validation and param clean
-		const UPDATE_SECTION = `
-			UPDATE tutorial.sections
-			SET section_text = '${text}'
-			WHERE section_id = ${id}
-		`;
+		let UPDATE_SECTION = ''
+		if(text) {
+			UPDATE_SECTION = `
+				UPDATE tutorial.sections
+				SET section_text = '${text}'
+				WHERE section_id = ${id}
+			`;
+		} else {
+			UPDATE_SECTION = `
+				UPDATE tutorial.sections
+				SET section_name = '${name}', section_desc = '${description}', chapter_id = ${chapterId}
+				WHERE section_id = ${id}
+			`;
+		}
 		// console.log(UPDATE_SECTION)
 		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
 	}
@@ -101,7 +110,7 @@ var Writing = {
 
 // TODO: move all these transformations and data modeling to an actual model
 function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
-	// console.log(SQL_QUERY)
+	console.log(SQL_QUERY)
 	var results = mysqlConnection.query(SQL_QUERY, function (error, results, fields) {
 		// console.log(results)
 		

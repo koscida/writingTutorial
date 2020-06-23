@@ -1,7 +1,7 @@
 import React from 'react'
 import AddChapter from './Modals/AddChapter'
 import AddSection from './Modals/AddSection'
-import Button from 'react-bootstrap/Button'
+
 
 
 class ChapterList extends React.Component {
@@ -63,27 +63,23 @@ class ChapterList extends React.Component {
 	}
 	
 	render() {
-		const { chapters, onChapterCreate } = this.props
+		const { chapters, onChapterCreate, onSectionCreate } = this.props
 		const { showAddChapter, showAddSection } = this.state
 		
 		return (
 			<div id="chapterList">
-			
-				<ul key={'test'}>
-					{chapters.map( chapter => this.renderListItems(chapter) )}
-				</ul>
-				
 				<AddChapter 
 					onSave={onChapterCreate}
 				/>
 				
-				<Button variant="light" onClick={this.handleAddSectionToggle}>Add Section</Button>
-				<AddSection 
-					onSectionSave={this.handleSectionCreate}
+				<AddSection
 					chapters={chapters}
-					show={showAddSection}
-					handleToggle={this.handleAddSectionToggle}
+					onSubmit={onSectionCreate}
 				/>
+				
+				<ul key={'test'}>
+					{chapters.map( chapter => this.renderListItems(chapter) )}
+				</ul>
 				
 			</div>
 		)

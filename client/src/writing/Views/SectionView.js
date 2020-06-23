@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
+import SectionForm from '../Modals/SectionForm'
 import { Container, Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
 
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
@@ -99,13 +101,21 @@ class SectionView extends React.Component {
 		this.setState({ editorState });
 	}
 	
-	handleSave = () => {
-		this.handleEditToggle()
+	handleTextSave = () => {
 		const rawEditorState = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent()) )
 		// const rawEditorState = this.state.editorState
-		this.props.onSave({
+		this.props.onTextSave({
 			...this.props.sectionData,
 			text: rawEditorState
+		})
+	}
+	
+	handleMetaSave = values => {
+		// console.log("handleMetaSave", values)
+		this.handleEditToggle()
+		this.props.onMetaSave({
+			...this.props.sectionData,
+			...values
 		})
 	}
 	
@@ -115,39 +125,53 @@ class SectionView extends React.Component {
 	
 	renderEditor() {
 		const { sectionData: { id } } = this.props
-		let editor = []
-		editor.push(<Editor 
-			key={`editor_${id}`}
-			editorState={this.state.editorState} 
-			onChange={this.handleEditorChange}
-			plugins={plugins}
-			spellCheck={true}
-			ref={(element) => { this.editor = element; }}
-			placeholder="Tell a story..."
-			readOnly={!this.state.editMode}
-		/>)
-		if(this.state.editMode) 
-			editor.push(<Toolbar key={`toolbar_${id}`}>
-					{
-						// may be use React.Fragment instead of div to improve perfomance after React 16
-						(externalProps) => (
-							<React.Fragment>
-								<BoldButton {...externalProps} />
-								<ItalicButton {...externalProps} />
-								<UnderlineButton {...externalProps} />
-								<CodeButton {...externalProps} />
-								<Separator {...externalProps} />
-								{/* <HeadlinesButton {...externalProps} /> */}
-								<UnorderedListButton {...externalProps} />
-								<OrderedListButton {...externalProps} />
-								<BlockquoteButton {...externalProps} />
-								<CodeBlockButton {...externalProps} />
-							</React.Fragment>
-						)
-					}
+		return <>
+				<Editor 
+					key={`editor_${id}`}
+					editorState={this.state.editorState} 
+					onChange={this.handleEditorChange}
+					plugins={plugins}
+					spellCheck={true}
+					ref={(element) => { this.editor = element; }}
+					placeholder="Tell a story..."
+					// readOnly={!this.state.editMode}
+				/>
+				<Toolbar key={`toolbar_${id}`}>
+					{(externalProps) => (
+						<React.Fragment>
+							<BoldButton {...externalProps} />
+							<ItalicButton {...externalProps} />
+							<UnderlineButton {...externalProps} />
+							<CodeButton {...externalProps} />
+							<Separator {...externalProps} />
+							{/* <HeadlinesButton {...externalProps} /> */}
+							<UnorderedListButton {...externalProps} />
+							<OrderedListButton {...externalProps} />
+							<BlockquoteButton {...externalProps} />
+							<CodeBlockButton {...externalProps} />
+						</React.Fragment>
+					)}
 				</Toolbar>
-			)
-		return editor
+				<Button variant="primary" onClick={this.handleTextSave}>Save</Button>
+			</>
+	}
+	
+	renderNoEditMeta() {
+		const { sectionData: { id, name, description, order, text } } = this.props
+		return (
+			<>
+				<p>{description}</p>
+			</>
+		)
+	}
+	
+	renderEditMeta() {
+		const { chapters, sectionData } = this.props
+		return <SectionForm
+				chapters={chapters}
+				sectionData={sectionData}
+				onSectionSave={this.handleMetaSave}
+			/>
 	}
 	
 	render() {
@@ -159,25 +183,19 @@ class SectionView extends React.Component {
 			<Container>
 				<Row>
 					<Col>
-						<h1>Section {order}: {name}</h1>
-					</Col>
-					<Col>
-						<Button variant="primary" onClick={this.handleEditToggle}>Edit</Button>
-					</Col>
-				</Row>
-				<Row>
-					<Col>
-					<p>{description}</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col>
 						{this.renderEditor()}
 					</Col>
-				</Row>
-				<Row>
-					<Col>
-						<Button variant="primary" onClick={this.handleSave}>Save</Button>
+					<Col md="3">
+						<h3>{name}</h3>
+						<Button 
+							variant="primary" 
+							onClick={this.handleEditToggle} 
+							className="float-right"
+							size="sm"
+						>
+							{editMode ? 'Cancel' :'Edit'}
+						</Button>
+						{ editMode ? this.renderEditMeta() : this.renderNoEditMeta() }
 					</Col>
 				</Row>
 			</Container>

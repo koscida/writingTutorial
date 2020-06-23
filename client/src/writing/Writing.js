@@ -98,12 +98,14 @@ class Writing extends React.Component {
 		const order = (chap.sections.length > 0) ? chap.sections[chap.sections.length-1].order + 1 : 0
 		// console.log(order)
 		// TODO: check for ok status codes, assumes 200 rn
-		fetch(`http://localhost:5000/writing/section/add?
+		const FETCH_URL = `http://localhost:5000/writing/section/add?
 			name=${name}&
 			description=${description}&
 			chapterId=${chapterId}&
 			order=${order}
-		`)
+		`;
+		// console.log(FETCH_URL)
+		fetch(FETCH_URL)
 		.then(response => {
 			//console.log(response)
 			return response.json()
@@ -116,8 +118,7 @@ class Writing extends React.Component {
 		.catch(error => console.log(error));
 	}
 	
-	handleSectionSave = sectionData => {
-		const { id, text } = sectionData
+	handleSectionTextSave = ({ id, text }) => {
 		fetch(`http://localhost:5000/writing/section/edit?
 			id=${id}&
 			text=${text}
@@ -128,7 +129,29 @@ class Writing extends React.Component {
 		})
 		.then( ({ data }) => {
 			// console.log(data)
-			this.getChapters();
+			this.getChapters()
+		})
+		.catch(error => console.log(error))
+	}
+	
+	// handleSectionMetaSave = ({ id, name, description, chapterId }) => {
+	handleSectionMetaSave = values => {
+		const { id, name, description, chapterId } = values
+		// console.log("handleSectionMetaSave", values)
+		fetch(`http://localhost:5000/writing/section/edit?
+			id=${id}&
+			name=${name}&
+			description=${description}&
+			chapterId=${chapterId}
+		`)
+		.then(response => {
+			//console.log(response)
+			return response.json()
+		})
+		.then( ({ data }) => {
+			// console.log(data)
+			this.getChapters()
+			this.handleSectionSelect(id)
 		})
 		.catch(error => console.log(error));
 	}
@@ -143,8 +166,10 @@ class Writing extends React.Component {
 			/>
 		} else if(selected.section) {
 			view = <SectionView 
+				chapters={chapters}
 				sectionData={selected.sectionData}
-				onSave={this.handleSectionSave}
+				onTextSave={this.handleSectionTextSave}
+				onMetaSave={this.handleSectionMetaSave}
 			/>
 		}
 		
