@@ -38,7 +38,12 @@ class AddChapter extends React.Component {
 		const { show, chapter : { name } } = this.state
 		return (
 			<>
-				<Button variant="light" onClick={this.handleToggle}>Add Chapter</Button>
+				<Button 
+					variant="light" 
+					onClick={this.handleToggle} 
+					size="sm"
+					className="mr-sm-2"
+				>New Chapter</Button>
 				
 				<Modal show={show} onHide={this.handleToggle}>
 					<Modal.Header closeButton>

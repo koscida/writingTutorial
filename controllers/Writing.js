@@ -78,8 +78,10 @@ var Writing = {
 	getSection: (req, res)  => {
 		const id = parseInt(req.params.id)
 		const SELECT_SECTION = `
-			SELECT * 
-			FROM tutorial.sections 
+			SELECT s.*, c.chapter_name
+			FROM tutorial.sections AS s
+			LEFT JOIN tutorial.chapters AS c
+			ON c.chapter_id = s.chapter_id
 			WHERE section_id = ${id}
 		`;
 		// console.log(SELECT_SECTION)
@@ -197,6 +199,7 @@ function transformSectionData(s) {
 		name 			: (s.section_name) ? s.section_name : null,
 		order 		: (s.section_order) ? parseInt(s.section_order) : null,
 		chapterId 	: (s.chapter_id) ? parseInt(s.chapter_id) : null,
+		chapterName : (s.chapter_name) ? s.chapter_name : null,
 		text 			: (s.section_text) ? Buffer.from(s.section_text.data).toString() : null,
 		description	: (s.section_desc) ? Buffer.from(s.section_desc.data).toString() : null,
 	}

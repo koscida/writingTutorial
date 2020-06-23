@@ -67,21 +67,27 @@ class ChapterList extends React.Component {
 		const { showAddChapter, showAddSection } = this.state
 		
 		return (
-			<div id="chapterList">
-				<AddChapter 
-					onSave={onChapterCreate}
-				/>
-				
-				<AddSection
-					chapters={chapters}
-					onSubmit={onSectionCreate}
-				/>
-				
-				<ul key={'test'}>
-					{chapters.map( chapter => this.renderListItems(chapter) )}
-				</ul>
-				
-			</div>
+			<>
+				<div id="sidebarHeader" className="p-sm-2">
+					<AddChapter 
+						onSave={onChapterCreate}
+					/>
+					
+					<AddSection
+						chapters={chapters}
+						onSubmit={onSectionCreate}
+					/>
+				</div>
+				<div id="sidebarContent">
+					
+					<div id="chapterList">
+						<ul key={'test'}>
+							{chapters.map( chapter => this.renderListItems(chapter) )}
+						</ul>
+					</div>
+					
+				</div>
+			</>
 		)
 	}
 }

@@ -2,7 +2,9 @@ import React, { Component, Fragment } from 'react';
 import SectionForm from '../Modals/SectionForm'
 import { Container, Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
+import Tabs from 'react-bootstrap/Tabs'
+import Tab from 'react-bootstrap/Tab'
+import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
@@ -125,7 +127,7 @@ class SectionView extends React.Component {
 	
 	renderEditor() {
 		const { sectionData: { id } } = this.props
-		return <>
+		return <	>
 				<Editor 
 					key={`editor_${id}`}
 					editorState={this.state.editorState} 
@@ -152,26 +154,50 @@ class SectionView extends React.Component {
 						</React.Fragment>
 					)}
 				</Toolbar>
-				<Button variant="primary" onClick={this.handleTextSave}>Save</Button>
-			</>
+				<Button variant="primary" onClick={this.handleTextSave} className="my-md-3">Save</Button>
+		</>
 	}
 	
 	renderNoEditMeta() {
-		const { sectionData: { id, name, description, order, text } } = this.props
+		const { sectionData: { name, description, chapterName} } = this.props
 		return (
 			<>
-				<p>{description}</p>
+				<Row className="my-sm-3">
+					<Col sm="2">Name</Col>
+					<Col>{name}</Col>
+				</Row>
+				<Row className="my-sm-3">
+					<Col sm="2">Chapter</Col>
+					<Col>{chapterName}</Col>
+				</Row>
+				<Row className="my-sm-3">
+					<Col sm="2">Description</Col>
+					<Col><p>{description}</p></Col>
+				</Row>
+				<Row className="my-sm-3"><Col>
+					<Button 
+						variant="primary" 
+						onClick={this.handleEditToggle} 
+					>
+						Edit
+					</Button>
+				</Col></Row>
 			</>
 		)
 	}
 	
 	renderEditMeta() {
 		const { chapters, sectionData } = this.props
-		return <SectionForm
-				chapters={chapters}
-				sectionData={sectionData}
-				onSectionSave={this.handleMetaSave}
-			/>
+		return <>
+			<Row><Col>
+				<SectionForm
+					chapters={chapters}
+					sectionData={sectionData}
+					onSectionSave={this.handleMetaSave}
+					onCancel={this.handleEditToggle}
+				/>
+			</Col></Row>
+		</>
 	}
 	
 	render() {
@@ -179,26 +205,18 @@ class SectionView extends React.Component {
 			sectionData: { id, name, description, order, text },
 		} = this.props,
 			{ editMode, editorState } = this.state
+		// TODO: add chapter info to section data for: breadcrumbs
 		return (
-			<Container>
-				<Row>
-					<Col>
-						{this.renderEditor()}
-					</Col>
-					<Col md="3">
-						<h3>{name}</h3>
-						<Button 
-							variant="primary" 
-							onClick={this.handleEditToggle} 
-							className="float-right"
-							size="sm"
-						>
-							{editMode ? 'Cancel' :'Edit'}
-						</Button>
-						{ editMode ? this.renderEditMeta() : this.renderNoEditMeta() }
-					</Col>
-				</Row>
-			</Container>
+			<>
+			<Tabs defaultActiveKey="editor" className="viewTabs">
+				<Tab eventKey="editor" title="Editor">
+					{this.renderEditor()}
+				</Tab>
+				<Tab eventKey="meta" title="Meta">
+					{ editMode ? this.renderEditMeta() : this.renderNoEditMeta() }
+				</Tab>
+			</Tabs>
+			</>
 		)
 	}
 }

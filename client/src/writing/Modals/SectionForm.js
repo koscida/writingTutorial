@@ -7,7 +7,8 @@ import * as yup from 'yup'
 const SectionForm = ({ 
 	chapters, 
 	sectionData: { id, name, chapterId, description }, 
-	onSectionSave 
+	onSectionSave,
+	onCancel
 }) => {
 	return (
 		<>
@@ -41,7 +42,7 @@ const SectionForm = ({
 				errors,
 				}) => (
 				<Form onSubmit={handleSubmit}>
-					<Form.Group controlId="formSectionrName">
+					<Form.Group controlId="formSectionName">
 						<Form.Label>Name</Form.Label>
 						<Form.Control 
 							required
@@ -89,11 +90,17 @@ const SectionForm = ({
 					
 					<Button 
 						variant="primary" 
-						className="float-right"
 						onClick={handleSubmit}
 						disabled={!values.name || !values.chapterId}
+						className="mr-sm-2"
 					>
 						Save
+					</Button>
+					<Button 
+						variant="outline-danger" 
+						onClick={onCancel}
+					>
+						Cancel
 					</Button>
 				</Form>
 			)}

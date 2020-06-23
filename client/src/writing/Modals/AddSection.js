@@ -22,7 +22,11 @@ class AddSection extends React.Component{
 		const { chapters } = this.props
 		return (
 			<>
-				<Button variant="light" onClick={this.handleToggle}>Add Section</Button>
+				<Button 
+					variant="light" 
+					onClick={this.handleToggle}
+					size="sm"
+				>New Section</Button>
 				<Modal show={this.state.show} onHide={this.handleToggle}>
 					<Modal.Header closeButton>
 						<Modal.Title>Create New Section</Modal.Title>
@@ -32,6 +36,7 @@ class AddSection extends React.Component{
 							chapters={chapters}
 							sectionData={{ id:null, name:null, chapterId:null, description:null }}
 							onSectionSave={this.handleCreate}
+							onCancel={this.handleToggle}
 						/>
 					</Modal.Body>
 				</Modal>

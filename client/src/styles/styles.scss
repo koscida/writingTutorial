@@ -1,36 +1,213 @@
-$backgroundColorPrimary: #444;
-$backgroundColorSecondary: darken( $backgroundColorPrimary, 10% );
-$textColor: #ddd;
+$primary: #496076;
+$primaryDarken: darken( $primary, 10% );
+$primaryLight: lighten( $primary, 20% );
+$primaryContrast: #ddd;
 
+$text: #212529;
 
-#writingRoot {
-	background-color: $backgroundColorPrimary;
-	color: $textColor;
-	display: grid;
-	grid-template-columns: 200px auto;
+$active: #99e7c3;
+$activeDarken: darken( $active, 10% );
+$activeLight: lighten( $active, 10% );
+$activeContrast: #555;
+
+$danger: #cc858f; //#cc9187;
+
+body {
 	
-	> * {
-		padding: 10px;
-	}
-}
-
-#chapterList {
-	background-color: $backgroundColorSecondary;
-	height: 100vh;
-	overflow-y: scroll;
 	
-	li {
-		&.active {
-			background-color: $backgroundColorPrimary;
-		}
+	// Overwrite bootstrap and default styles
+	a {
+		color: $activeDarken;
 		&:hover {
-			cursor: pointer;
-		}
-		&:not(.sections) {
-			padding: 5px 10px;
-		}
-		&.sections {
-			padding-left: 10px;
+			color: darken($activeDarken, 10%);
 		}
 	}
+	.active {
+		color: $active;
+		> * {
+			color: $text;
+		}
+	}
+
+	.btn-primary {
+		background-color: $active;
+		border-color: $active;
+		color: $activeContrast;
+		&:hover, &:active, &:focus,
+		&:not(:disabled):not(.disabled):active {
+			background-color: darken($active, 10%);
+			border-color: darken($active, 10%);
+		}
+	}
+	.btn-primary.disabled, .btn-primary:disabled {
+		background-color: $activeLight;
+		border-color: $activeLight;
+		color: lighten($activeContrast, 10%);
+	}
+	
+	.btn-outline-danger {
+		background-color: transparent;
+		border-color: $danger;
+		color: $danger;
+		&:hover, &:active, &:focus,
+		&:not(:disabled):not(.disabled):active {
+			background-color: $danger;
+			border-color: $danger;
+			color: #fff;
+		}
+	}
+	
+	// bootsrap tabs
+	.viewTabs {
+		&.nav-tabs {
+			.active {
+				color: $primary;
+			}
+			> a.disabled {
+				margin: 0 5px 5px 0;
+				background: $primary;
+				color: $active;
+				border-radius: 0;
+			}
+		}
+		&+ .tab-content {
+			padding: 10px 0;
+		}
+	}
+	
+	// editor 
+	div.DraftEditor-root {
+		background-color: #fffef7;
+		margin:auto;
+		border: 1px solid #ddd;
+		box-shadow: 0px 1px 3px 0px rgba(220,220,220,1);
+		height:300px;
+		overflow-y: scroll;
+		padding:20px;
+		font-size: 18px;
+		font-family: 'calibri', sans-serif;
+		color: #444;
+	}
+	
+	
+	
+	::-webkit-scrollbar-track
+	{
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+		background-color: #F5F5F5;
+		// border-radius: 10px;
+	}
+	::-webkit-scrollbar
+	{
+		width: 12px;
+		background-color: #F5F5F5;
+	}
+	::-webkit-scrollbar-thumb
+	{
+		width: 10px;
+		border-radius: 10px;
+		background-color: #F5F5F5;
+	}
+
+	#writingContainer {
+	// Grid layout
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	grid-template-rows: 38px auto min-content;
+	grid-template-columns: auto;
+	grid-template-areas:
+		"writingTopNav"
+		"writingWorkspace"
+		"writingBanners";
+	
+	#writingTopNav {
+		grid-area: writingTopNav;
+		
+		background: $primaryDarken;
+		color: #FFFFFF;
+		box-shadow: 0 1px 0 0 rgba(255,255,255,0.1);
+	}
+	#writingWorkspace {
+		grid-area: writingWorkspace;
+		
+		display: grid;
+		grid-template-rows: auto;
+		grid-template-columns: 234px auto;
+		grid-template-areas: "workspaceSidebar workspaceView";
+		overflow: hidden;
+		position: relative;
+		
+		#workspaceSidebar {
+			grid-area: workspaceSidebar;
+			
+			background: $primary;
+			color: #FFFFFF;
+			
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+			min-width: 0;
+			
+			#sidebarHeader {
+				border-top: 1px solid $primaryLight;
+				border-bottom: 1px solid $primaryLight;
+			}
+			
+			#sidebarContent {
+				height: auto;
+				min-height: 0;
+				width: 100%;
+				overflow-y: scroll;
+				
+				&::-webkit-scrollbar-track {
+					background: $primary;
+				}
+				&::-webkit-scrollbar-thumb {
+					background-color: darken( $primary, 11% );
+				}
+			}
+		}
+		
+		#workspaceView {
+			grid-area: workspaceView;
+			
+			#view {
+				padding: 10px;
+			}
+		}
+	}
+	#writingBanners {
+		grid-area: writingBanners;
+	}
 }
+
+	#chapterList {
+		// background-color: $backgroundColorSecondary;
+		// height: 100vh;
+		// overflow-y: scroll;
+		
+		li {
+			&.active {
+				// background-color: $primary;
+			}
+			&:hover {
+				cursor: pointer;
+			}
+			&:not(.sections) {
+				padding: 5px 10px;
+			}
+			&.sections {
+				padding-left: 10px;
+			}
+		}
+	}
+	
+	
+	// Custom styles
+	#view {
+		
+	}
+	
+}
+	

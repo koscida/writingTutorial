@@ -174,18 +174,35 @@ class Writing extends React.Component {
 		}
 		
 		return (
-			<div id="writingRoot">
-				<ChapterList
-					chapters={chapters}
-					selected={selected}
-					onChapterSelect={this.handleChapterSelect}
-					onSectionSelect={this.handleSectionSelect}
-					onChapterCreate={this.handleChapterCreate}
-					onSectionCreate={this.handleSectionCreate}
-				/>
-				<div id="view">
-					{view}
+			<div id="writingContainer">
+			
+				<div id="writingTopNav"></div>
+				
+				<div id="writingWorkspace">
+				
+					<div id="workspaceSidebar">
+						<ChapterList
+							chapters={chapters}
+							selected={selected}
+							onChapterSelect={this.handleChapterSelect}
+							onSectionSelect={this.handleSectionSelect}
+							onChapterCreate={this.handleChapterCreate}
+							onSectionCreate={this.handleSectionCreate}
+						/>
+					</div>
+					
+					{/* <div id="workspaceResizer"></div> */}
+					
+					<div id="workspaceView">
+						<div id="view">
+							{view}
+						</div>
+					</div>
+					
 				</div>
+				
+				<div id="writingBanners"></div>
+				
 			</div>
 		)
 	}
