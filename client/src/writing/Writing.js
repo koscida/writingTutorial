@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from './Context'
 import ChapterList from './ChapterList'
 import WelcomeView from './Views/WelcomeView'
 import ChapterView from './Views/ChapterView'
@@ -9,10 +10,10 @@ import '../styles/styles.scss'
 class Writing extends React.Component {
 	state = {
 		chapters : [],
-		selected : {
-			chapter : null,
-			section : null
-		}
+		selectedChapter : null,
+		selectedSection : null,
+		selectedSectionData : null,
+		selectedChapterData : null
 	}
 	
 	componentDidMount() {
@@ -44,11 +45,10 @@ class Writing extends React.Component {
 		.then( ({ data }) => {
 			//console.log(data)
 			this.setState((prevState, props) => ({
-				selected: {
-					chapter : id,
-					section : null,
-					chapterData: data[0]
-				}
+				selectedChapter : id,
+				selectedChapterData: data[0],
+				selectedSection : null,
+				selectedSectionData: null,
 			}))
 		})
 		.catch(error => console.log(error));
@@ -63,11 +63,10 @@ class Writing extends React.Component {
 		.then( ({ data }) => {
 			//console.log(data)
 			this.setState((prevState, props) => ({
-				selected: {
-					chapter : null,
-					section : id,
-					sectionData: data[0]
-				}
+				selectedSection : id,
+				selectedSectionData : data[0],
+				selectedChapter : null,
+				selectedChapterData : null,
 			}))
 		})
 		.catch(error => console.log(error));
@@ -87,7 +86,8 @@ class Writing extends React.Component {
 		})
 		.then( ({ data }) => {
 			// console.log(data)
-			this.getChapters();
+			this.getChapters()
+			this.handleChapterSelect(data.insertId)
 		})
 		.catch(error => console.log(error));
 	}
@@ -137,12 +137,18 @@ class Writing extends React.Component {
 	// handleSectionMetaSave = ({ id, name, description, chapterId }) => {
 	handleSectionMetaSave = values => {
 		const { id, name, description, chapterId } = values
+		let { order } = values
+		if(chapterId !== this.state.selected.sectionData.chapterId){
+			const chap = this.state.chapters.find(c => c.id === parseInt(chapterId))
+			order = (chap.sections.length > 0) ? chap.sections[chap.sections.length-1].order + 1 : 0
+		}
 		// console.log("handleSectionMetaSave", values)
 		fetch(`http://localhost:5000/writing/section/edit?
 			id=${id}&
 			name=${name}&
 			description=${description}&
-			chapterId=${chapterId}
+			chapterId=${chapterId}&
+			order=${order}
 		`)
 		.then(response => {
 			//console.log(response)
@@ -156,54 +162,82 @@ class Writing extends React.Component {
 		.catch(error => console.log(error));
 	}
 	
+	handleChapterMetaSave = values => {
+		const { id, name, description } = values
+		// console.log("handleSectionMetaSave", values)
+		fetch(`http://localhost:5000/writing/chapter/edit?
+			id=${id}&
+			name=${name}&
+			description=${description}
+		`)
+		.then(response => {
+			//console.log(response)
+			return response.json()
+		})
+		.then( ({ data }) => {
+			// console.log(data)
+			this.getChapters()
+			this.handleChapterSelect(id)
+		})
+		.catch(error => console.log(error));
+	}
+	
 	render () {
-		const { chapters, selected } = this.state
+		const { 
+			chapters, 
+			selectedChapter, selectedChapterData,
+			selectedSection, selectedSectionData
+		} = this.state
 		
 		let view = <WelcomeView />;
-		if(selected.chapter) {
+		if(selectedChapter) {
 			view = <ChapterView 
-				chapterData={selected.chapterData}
+				chapterData={selectedChapterData}
+				onMetaSave={this.handleChapterMetaSave}
 			/>
-		} else if(selected.section) {
+		} else if(selectedSection) {
 			view = <SectionView 
 				chapters={chapters}
-				sectionData={selected.sectionData}
+				sectionData={selectedSectionData}
 				onTextSave={this.handleSectionTextSave}
 				onMetaSave={this.handleSectionMetaSave}
 			/>
 		}
 		
 		return (
-			<div id="writingContainer">
-			
-				<div id="writingTopNav"></div>
+			<Provider value={this.getContext()}>
+				<div id="writingContainer">
 				
-				<div id="writingWorkspace">
-				
-					<div id="workspaceSidebar">
-						<ChapterList
-							chapters={chapters}
-							selected={selected}
-							onChapterSelect={this.handleChapterSelect}
-							onSectionSelect={this.handleSectionSelect}
-							onChapterCreate={this.handleChapterCreate}
-							onSectionCreate={this.handleSectionCreate}
-						/>
-					</div>
+					<div id="writingTopNav"></div>
 					
-					{/* <div id="workspaceResizer"></div> */}
+					<div id="writingWorkspace">
 					
-					<div id="workspaceView">
-						<div id="view">
-							{view}
+						<div id="workspaceSidebar">
+							<ChapterList
+								chapters={chapters}
+								selectedChapter={selectedChapter}
+								selectedSection={selectedSection}
+								onChapterSelect={this.handleChapterSelect}
+								onSectionSelect={this.handleSectionSelect}
+								onChapterCreate={this.handleChapterCreate}
+								onSectionCreate={this.handleSectionCreate}
+							/>
 						</div>
+						
+						{/* <div id="workspaceResizer"></div> */}
+						
+						<div id="workspaceView">
+							<div id="view">
+								{view}
+							</div>
+						</div>
+						
 					</div>
+					
+					<div id="writingBanners"></div>
 					
 				</div>
-				
-				<div id="writingBanners"></div>
-				
-			</div>
+			</Provider>
 		)
 	}
 }

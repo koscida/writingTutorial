@@ -1,10 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import SectionForm from '../Modals/SectionForm'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-import Breadcrumb from 'react-bootstrap/Breadcrumb'
 
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
@@ -25,54 +24,10 @@ import {
 } from 'draft-js-buttons';
 
 import editorStyles from '../../styles/editorStyles.css'
-import buttonStyles from '../../styles/editorButtonStyles.css'
-import toolbarStyles from '../../styles/editorToolbarStyles.css'
+// import buttonStyles from '../../styles/editorButtonStyles.css'
+// import toolbarStyles from '../../styles/editorToolbarStyles.css'
 // import 'draft-js/dist/Draft.css'
 import 'draft-js-static-toolbar-plugin/lib/plugin.css'
-
-class HeadlinesPicker extends Component {
-	componentDidMount() {
-	  setTimeout(() => { window.addEventListener('click', this.onWindowClick); });
-	}
- 
-	componentWillUnmount() {
-	  window.removeEventListener('click', this.onWindowClick);
-	}
- 
-	onWindowClick = () =>
-	  // Call `onOverrideContent` again with `undefined`
-	  // so the toolbar can show its regular content again.
-	  this.props.onOverrideContent(undefined);
- 
-	render() {
-	  const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
-	  return (
-		 <div>
-			{buttons.map((Button, i) => // eslint-disable-next-line
-			  <Button key={i} {...this.props} />
-			)}
-		 </div>
-	  );
-	}
- }
- 
-class HeadlinesButton extends Component {
-	onClick = () =>
-	  // A button can call `onOverrideContent` to replace the content
-	  // of the toolbar. This can be useful for displaying sub
-	  // menus or requesting additional information from the user.
-	  this.props.onOverrideContent(HeadlinesPicker);
- 
-	render() {
-	  return (
-		 <div className={editorStyles.headlineButtonWrapper}>
-			<button onClick={this.onClick} className={editorStyles.headlineButton}>
-			  H
-			</button>
-		 </div>
-	  );
-	}
- }
 
 // const toolbarPlugin = createToolbarPlugin({
 // 	theme: { buttonStyles, toolbarStyles }
@@ -82,17 +37,15 @@ const { Toolbar } = toolbarPlugin;
 const plugins = [toolbarPlugin]
 
 class SectionView extends React.Component {
-	constructor(props) {
-		super(props);
-		const text = this.props.sectionData.text
-		// console.log(text)
-		this.state = {
-			editMode : false,
-			editorState: text 
-				? EditorState.createWithContent(convertFromRaw(JSON.parse(text))) 
-				: EditorState.createEmpty()
-			// editorState : createEditorStateWithText(text || '')
-		}
+	state = {
+		editMode : false,
+		editorState : this.setEditorState()
+	}
+	
+	setEditorState() {
+		return this.props.sectionData.text 
+			? EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.sectionData.text))) 
+			: EditorState.createEmpty()
 	}
 	
 	handleEditToggle = () => {
@@ -144,7 +97,11 @@ class SectionView extends React.Component {
 							<BoldButton {...externalProps} />
 							<ItalicButton {...externalProps} />
 							<UnderlineButton {...externalProps} />
-							<CodeButton {...externalProps} />
+							{/* <CodeButton {...externalProps} /> */}
+							<Separator {...externalProps} />
+							<HeadlineOneButton {...externalProps} />
+							<HeadlineTwoButton {...externalProps} />
+							<HeadlineThreeButton {...externalProps} />
 							<Separator {...externalProps} />
 							{/* <HeadlinesButton {...externalProps} /> */}
 							<UnorderedListButton {...externalProps} />
@@ -154,7 +111,7 @@ class SectionView extends React.Component {
 						</React.Fragment>
 					)}
 				</Toolbar>
-				<Button variant="primary" onClick={this.handleTextSave} className="my-md-3">Save</Button>
+				<Button variant="primary" onClick={this.handleTextSave} className="my-md-2">Save</Button>
 		</>
 	}
 	
@@ -193,18 +150,25 @@ class SectionView extends React.Component {
 				<SectionForm
 					chapters={chapters}
 					sectionData={sectionData}
-					onSectionSave={this.handleMetaSave}
+					onSave={this.handleMetaSave}
 					onCancel={this.handleEditToggle}
 				/>
 			</Col></Row>
 		</>
 	}
 	
+	componentDidUpdate(prevProps, prevState) {
+		if(prevProps.sectionData.id !== this.props.sectionData.id) {
+			//Perform some operation here
+			this.setState({
+				editorState : this.setEditorState(),
+				editMode : false
+			});
+		}
+	 }
+	
 	render() {
-		const { 
-			sectionData: { id, name, description, order, text },
-		} = this.props,
-			{ editMode, editorState } = this.state
+		const { editMode } = this.state
 		// TODO: add chapter info to section data for: breadcrumbs
 		return (
 			<>

@@ -2,20 +2,12 @@ import React from 'react'
 import AddChapter from './Modals/AddChapter'
 import AddSection from './Modals/AddSection'
 
-
-
 class ChapterList extends React.Component {
-	
-	state = {
-		showAddChapter: false,
-		showAddSection: false,
-	}
 	
 	renderListItems({id, name, sections}) {
 		const { 
-			selected : {chapter: selectedChapter, section: selectedSection }, 
-			onChapterSelect, 
-			onSectionSelect
+			selectedChapter, selectedSection, 
+			onChapterSelect, onSectionSelect
 		} = this.props
 		return <React.Fragment key={id}>
 			<li 
@@ -48,14 +40,6 @@ class ChapterList extends React.Component {
 		</React.Fragment>
 	}
 	
-	handleAddSectionToggle = () => {
-		this.setState({showAddSection: !this.state.showAddSection})
-	}
-	
-	handleAddChapterToggle = () => {
-		this.setState({showAddChapter: !this.state.showAddChapter})
-	}
-	
 	handleSectionCreate = values => {
 		this.handleAddSectionToggle()
 		this.props.onSectionCreate(values)
@@ -64,13 +48,12 @@ class ChapterList extends React.Component {
 	
 	render() {
 		const { chapters, onChapterCreate, onSectionCreate } = this.props
-		const { showAddChapter, showAddSection } = this.state
 		
 		return (
 			<>
 				<div id="sidebarHeader" className="p-sm-2">
 					<AddChapter 
-						onSave={onChapterCreate}
+						onSubmit={onChapterCreate}
 					/>
 					
 					<AddSection

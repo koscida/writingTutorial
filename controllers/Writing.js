@@ -88,7 +88,7 @@ var Writing = {
 		runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
 	},
 	editSection : (req, res) => {
-		const { id, text, name, description, chapterId } = req.query
+		const { id, text, name, description, chapterId, order } = req.query
 		// TODO: data validation and param clean
 		let UPDATE_SECTION = ''
 		if(text) {
@@ -100,13 +100,33 @@ var Writing = {
 		} else {
 			UPDATE_SECTION = `
 				UPDATE tutorial.sections
-				SET section_name = '${name}', section_desc = '${description}', chapter_id = ${chapterId}
+				SET section_name = '${name}', section_desc = '${description}', chapter_id = ${chapterId}, section_order = ${order}
 				WHERE section_id = ${id}
 			`;
 		}
 		// console.log(UPDATE_SECTION)
 		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
-	}
+	},
+	editChapter : (req, res) => {
+		const { id, name, description } = req.query
+		// TODO: data validation and param clean
+		let UPDATE_CHAPTER = ''
+		if(description) {
+			UPDATE_CHAPTER = `
+				UPDATE tutorial.chapters
+				SET chapter_desc = '${description}', chapter_name = '${name}'
+				WHERE chapter_id = ${id}
+			`;
+		} else {
+			UPDATE_CHAPTER = `
+				UPDATE tutorial.chapters
+				SET chapter_name = '${name}'
+				WHERE chapter_id = ${id}
+			`;
+		}
+		// console.log(UPDATE_CHAPTER)
+		runQueryResultsHelper(req, res, UPDATE_CHAPTER) //TODO: process return for successful insert
+	},
 };
 
 

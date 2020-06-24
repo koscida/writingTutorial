@@ -77,19 +77,17 @@ body {
 	
 	// editor 
 	div.DraftEditor-root {
-		background-color: #fffef7;
-		margin:auto;
+		background-color: #f2f2f7;
 		border: 1px solid #ddd;
 		box-shadow: 0px 1px 3px 0px rgba(220,220,220,1);
-		height:300px;
+		height: calc( 100vh - 38px - (10px * 2) - (42px + 10px) - 36px - (38px + 8px) ); 
+		//300px; //FIXME: do proper calculation (100 - topnav - viewpadding - (tabs+pad) - toolbar - (savebtn+pad)
 		overflow-y: scroll;
-		padding:20px;
+		padding: 20px;
 		font-size: 18px;
 		font-family: 'calibri', sans-serif;
-		color: #444;
+		color: $text;
 	}
-	
-	
 	
 	::-webkit-scrollbar-track
 	{

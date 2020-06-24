@@ -35,7 +35,7 @@ class AddSection extends React.Component{
 						<SectionForm
 							chapters={chapters}
 							sectionData={{ id:null, name:null, chapterId:null, description:null }}
-							onSectionSave={this.handleCreate}
+							onSave={this.handleCreate}
 							onCancel={this.handleToggle}
 						/>
 					</Modal.Body>
