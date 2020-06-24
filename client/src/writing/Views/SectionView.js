@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import SectionForm from '../Modals/SectionForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
@@ -13,7 +13,7 @@ import {
 	ItalicButton,
 	BoldButton,
 	UnderlineButton,
-	CodeButton,
+	// CodeButton,
 	HeadlineOneButton,
 	HeadlineTwoButton,
 	HeadlineThreeButton,
@@ -23,7 +23,7 @@ import {
 	CodeBlockButton,
 } from 'draft-js-buttons';
 
-import editorStyles from '../../styles/editorStyles.css'
+// import editorStyles from '../../styles/editorStyles.css'
 // import buttonStyles from '../../styles/editorButtonStyles.css'
 // import toolbarStyles from '../../styles/editorToolbarStyles.css'
 // import 'draft-js/dist/Draft.css'
@@ -186,4 +186,4 @@ class SectionView extends React.Component {
 }
 
 
-export default SectionView;
+export default SectionView

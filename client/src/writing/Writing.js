@@ -1,5 +1,5 @@
 import React from 'react';
-import { Provider } from './Context'
+import Context from './Context'
 import ChapterList from './ChapterList'
 import WelcomeView from './Views/WelcomeView'
 import ChapterView from './Views/ChapterView'
@@ -182,6 +182,10 @@ class Writing extends React.Component {
 		.catch(error => console.log(error));
 	}
 	
+	getContext = () => ({
+		...this.state,
+	})
+	
 	render () {
 		const { 
 			chapters, 
@@ -205,7 +209,7 @@ class Writing extends React.Component {
 		}
 		
 		return (
-			<Provider value={this.getContext()}>
+			<Context.Provider value={this.getContext()}>
 				<div id="writingContainer">
 				
 					<div id="writingTopNav"></div>
@@ -214,7 +218,6 @@ class Writing extends React.Component {
 					
 						<div id="workspaceSidebar">
 							<ChapterList
-								chapters={chapters}
 								selectedChapter={selectedChapter}
 								selectedSection={selectedSection}
 								onChapterSelect={this.handleChapterSelect}
@@ -237,7 +240,7 @@ class Writing extends React.Component {
 					<div id="writingBanners"></div>
 					
 				</div>
-			</Provider>
+			</Context.Provider>
 		)
 	}
 }
