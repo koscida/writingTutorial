@@ -1,11 +1,14 @@
 import React from 'react';
-import ChapterForm from '../Modals/ChapterForm'
+import AppContext from '../contexts/AppContext'
+import ChapterMetaForm from '../forms/ChapterMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 
 class ChapterView extends React.Component {
+	static contextType = AppContext
+	
 	state = {
 		editMode : false,
 	}
@@ -17,17 +20,17 @@ class ChapterView extends React.Component {
 	handleMetaSave = values => {
 		// console.log("handleMetaSave", values)
 		this.handleEditToggle()
-		this.props.onMetaSave({
-			...this.props.chapternData,
+		this.context.onChapterMetaSave({
+			...this.context.selectedChapterData,
 			...values
 		})
+		
 	}
 	
 	renderEditMeta() {
 		return <>
 			<Row><Col>
-				<ChapterForm
-					chapterData={this.props.chapterData}
+				<ChapterMetaForm
 					onSave={this.handleMetaSave}
 					onCancel={this.handleEditToggle}
 				/>
@@ -36,7 +39,7 @@ class ChapterView extends React.Component {
 	}
 	
 	renderNoEditMeta() {
-		const { chapterData: { name, description } } = this.props
+		const { selectedChapterData: { name, description } } = this.context
 		return (
 			<>
 				<Row className="my-sm-3">

@@ -1,9 +1,12 @@
 import React from 'react'
-import ChapterForm from './ChapterForm'
+import AppContext from '../contexts/AppContext'
+import ChapterMetaForm from '../forms/ChapterMetaForm'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 
 class AddChapter extends React.Component {
+	static contextType = AppContext
+	
 	state = {
 		show: false
 	}
@@ -14,7 +17,7 @@ class AddChapter extends React.Component {
 	
 	handleCreate = values => {
 		this.handleToggle()
-		this.props.onSubmit(values)
+		this.context.onChapterCreate(values)
 		// console.log(values)
 	}
 	
@@ -33,8 +36,7 @@ class AddChapter extends React.Component {
 						<Modal.Title>Create New Chapter</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<ChapterForm 
-							chapterData={{ id:null, name:null, description:null }}
+						<ChapterMetaForm 
 							onSave={this.handleCreate}
 							onCancel={this.handleToggle}
 						/>

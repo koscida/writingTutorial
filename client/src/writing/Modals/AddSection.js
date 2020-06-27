@@ -1,9 +1,12 @@
 import React from 'react'
-import SectionForm from './SectionForm'
+import AppContext from '../contexts/AppContext'
+import SectionMetaForm from '../forms/SectionMetaForm'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 	
-class AddSection extends React.Component{
+class AddSection extends React.Component {
+	static contextType = AppContext
+	
 	state = {
 		show: false,
 	}
@@ -14,12 +17,11 @@ class AddSection extends React.Component{
 	
 	handleCreate = values => {
 		this.handleToggle()
-		this.props.onSubmit(values)
+		this.context.onSectionCreate(values)
 		// console.log(values)
 	}
 	
 	render() {
-		const { chapters } = this.props
 		return (
 			<>
 				<Button 
@@ -32,9 +34,7 @@ class AddSection extends React.Component{
 						<Modal.Title>Create New Section</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<SectionForm
-							chapters={chapters}
-							sectionData={{ id:null, name:null, chapterId:null, description:null }}
+						<SectionMetaForm
 							onSave={this.handleCreate}
 							onCancel={this.handleToggle}
 						/>

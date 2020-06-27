@@ -1,15 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import AppContext from '../contexts/AppContext'
 import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 import { Formik } from 'formik';
 import * as yup from 'yup'
 
-const SectionForm = ({ 
-	chapters, 
-	sectionData: { id, name, chapterId, description }, 
-	onSave,
-	onCancel
-}) => {
+const SectionMetaForm = ({ onSave, onCancel }) => {
+	const { chapters, selectedSectionData: { id, name, chapterId, description } } = useContext(AppContext)
 	return (
 		<>
 			<Formik
@@ -109,4 +106,4 @@ const SectionForm = ({
 	)
 }
 
-export default SectionForm
+export default SectionMetaForm

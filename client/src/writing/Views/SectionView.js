@@ -1,5 +1,6 @@
 import React from 'react';
-import SectionForm from '../Modals/SectionForm'
+import AppContext from '../contexts/AppContext'
+import SectionMetaForm from '../forms/SectionMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
@@ -37,14 +38,18 @@ const { Toolbar } = toolbarPlugin;
 const plugins = [toolbarPlugin]
 
 class SectionView extends React.Component {
+	static contextType = AppContext
+	
 	state = {
 		editMode : false,
-		editorState : this.setEditorState()
+		editorState : this.setEditorState(),
+		id : this.context.selectedSectionData.id
 	}
 	
 	setEditorState() {
-		return this.props.sectionData.text 
-			? EditorState.createWithContent(convertFromRaw(JSON.parse(this.props.sectionData.text))) 
+		const { text } = this.context.selectedSectionData
+		return text 
+			? EditorState.createWithContent(convertFromRaw(JSON.parse(text))) 
 			: EditorState.createEmpty()
 	}
 	
@@ -59,8 +64,8 @@ class SectionView extends React.Component {
 	handleTextSave = () => {
 		const rawEditorState = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent()) )
 		// const rawEditorState = this.state.editorState
-		this.props.onTextSave({
-			...this.props.sectionData,
+		this.context.onSectionTextSave({
+			...this.context.selectedSectionData,
 			text: rawEditorState
 		})
 	}
@@ -68,8 +73,8 @@ class SectionView extends React.Component {
 	handleMetaSave = values => {
 		// console.log("handleMetaSave", values)
 		this.handleEditToggle()
-		this.props.onMetaSave({
-			...this.props.sectionData,
+		this.context.onSectionMetaSave({
+			...this.context.selectedSectionData,
 			...values
 		})
 	}
@@ -79,7 +84,7 @@ class SectionView extends React.Component {
 	};
 	
 	renderEditor() {
-		const { sectionData: { id } } = this.props
+		const { selectedSectionData: { id } } = this.context
 		return <	>
 				<Editor 
 					key={`editor_${id}`}
@@ -89,7 +94,6 @@ class SectionView extends React.Component {
 					spellCheck={true}
 					ref={(element) => { this.editor = element; }}
 					placeholder="Tell a story..."
-					// readOnly={!this.state.editMode}
 				/>
 				<Toolbar key={`toolbar_${id}`}>
 					{(externalProps) => (
@@ -116,7 +120,7 @@ class SectionView extends React.Component {
 	}
 	
 	renderNoEditMeta() {
-		const { sectionData: { name, description, chapterName} } = this.props
+		const { selectedSectionData: { name, description, chapterName} } = this.context
 		return (
 			<>
 				<Row className="my-sm-3">
@@ -144,12 +148,9 @@ class SectionView extends React.Component {
 	}
 	
 	renderEditMeta() {
-		const { chapters, sectionData } = this.props
 		return <>
 			<Row><Col>
-				<SectionForm
-					chapters={chapters}
-					sectionData={sectionData}
+				<SectionMetaForm
 					onSave={this.handleMetaSave}
 					onCancel={this.handleEditToggle}
 				/>
@@ -158,14 +159,17 @@ class SectionView extends React.Component {
 	}
 	
 	componentDidUpdate(prevProps, prevState) {
-		if(prevProps.sectionData.id !== this.props.sectionData.id) {
+		const currID = this.context.selectedSectionData.id
+		const prevId = prevState.id 
+		if(currID !== prevId) {
 			//Perform some operation here
 			this.setState({
 				editorState : this.setEditorState(),
-				editMode : false
+				editMode : false,
+				id : currID
 			});
 		}
-	 }
+	}
 	
 	render() {
 		const { editMode } = this.state

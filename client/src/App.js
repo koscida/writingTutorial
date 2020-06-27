@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from './base/Home'
 import Error from './base/Error'
 import Products from './tutorials/Products'
-import Writing from './writing/Writing'
+import Writing from './writing/index'
 
 
 function App() {
