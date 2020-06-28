@@ -6,13 +6,18 @@ import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 
 const AddChapter = () => {
-	const [show, setShow] = useState(false)
+	const [isShown, setIsShown] = useState(false)
 	const { onChapterCreate } = useContext(AppContext)
-	const { isEditing, setIsEditing } = useContext(EditingContext)
+	const { isEditing, setIsEditing, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleToggle = () => {
-		setIsEditing(!show)
-		setShow(!show)
+		if (isEditing && !isShown) {
+			setEditingErrorMessage("Cannot create chapter when editing. Save content first.")
+		} else {
+			// Forces state
+			setIsEditing(!isShown)
+			setIsShown(!isShown)
+		}
 	}
 	
 	const handleCreate = values => {
@@ -30,7 +35,7 @@ const AddChapter = () => {
 				className="mr-sm-2"
 			>New Chapter</Button>
 			
-			<Modal show={show} onHide={handleToggle}>
+			<Modal show={isShown} onHide={handleToggle}>
 				<Modal.Header closeButton>
 					<Modal.Title>Create New Chapter</Modal.Title>
 				</Modal.Header>

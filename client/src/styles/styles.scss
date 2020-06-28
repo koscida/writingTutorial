@@ -14,7 +14,6 @@ $danger: #cc858f; //#cc9187;
 
 body {
 	
-	
 	// Overwrite bootstrap and default styles
 	a {
 		color: $activeDarken;
@@ -28,7 +27,11 @@ body {
 			color: $text;
 		}
 	}
-
+	pre, blockquote {
+		margin-bottom: 0;
+	}
+	
+	// overwrite bootstrap buttons
 	.btn-primary {
 		background-color: $active;
 		border-color: $active;
@@ -57,7 +60,14 @@ body {
 		}
 	}
 	
-	// bootsrap tabs
+	// overwrite bootstrap alerts
+	.alert {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+	}
+	
+	// overwrite bootsrap tabs
 	.viewTabs {
 		&.nav-tabs {
 			.active {
@@ -75,7 +85,7 @@ body {
 		}
 	}
 	
-	// editor 
+	// overwrite draft.js editor 
 	div.DraftEditor-root {
 		background-color: #f2f2f7;
 		border: 1px solid #ddd;
@@ -87,8 +97,33 @@ body {
 		font-size: 18px;
 		font-family: 'calibri', sans-serif;
 		color: $text;
+		
+		&+div[class^="draftJsToolbar"] { 
+			button {
+				padding-top: 0;
+			}
+		}
+		
+		ul, ol {
+			// padding-left: 20px;
+			margin-block-start: 1em;
+			margin-block-end: 1em;
+			margin-inline-start: 0px;
+			margin-inline-end: 0px;
+			padding-inline-start: 40px;
+			li {
+				padding-left: 0.25em;
+			}
+		}
+		ul {
+			list-style-type: disc;
+		}
+		ol {
+			list-style-type: decimal;
+		}
 	}
 	
+	// set custom scroll bar
 	::-webkit-scrollbar-track
 	{
 		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
@@ -106,95 +141,96 @@ body {
 		border-radius: 10px;
 		background-color: $primaryLight;
 	}
-
-	#writingContainer {
-	// Grid layout
-	width: 100vw;
-	height: 100vh;
-	display: grid;
-	grid-template-rows: 38px auto min-content;
-	grid-template-columns: auto;
-	grid-template-areas:
-		"writingTopNav"
-		"writingWorkspace"
-		"writingBanners";
 	
-	#writingTopNav {
-		grid-area: writingTopNav;
-		
-		background: $primaryDarken;
-		color: #FFFFFF;
-		box-shadow: 0 1px 0 0 rgba(255,255,255,0.1);
-	}
-	#writingWorkspace {
-		grid-area: writingWorkspace;
-		
+	// Grid layout
+	#writingContainer {
+		width: 100vw;
+		height: 100vh;
 		display: grid;
-		grid-template-rows: auto;
-		grid-template-columns: 234px auto;
-		grid-template-areas: "workspaceSidebar workspaceView";
-		overflow: hidden;
-		position: relative;
+		grid-template-rows: 38px auto min-content;
+		grid-template-columns: auto;
+		grid-template-areas:
+			"writingTopNav"
+			"writingWorkspace"
+			"writingBanners";
 		
-		#workspaceSidebar {
-			grid-area: workspaceSidebar;
+		#writingTopNav {
+			grid-area: writingTopNav;
 			
-			background: $primary;
+			background: $primaryDarken;
 			color: #FFFFFF;
-			
+			box-shadow: 0 1px 0 0 rgba(255,255,255,0.1);
 			display: flex;
-			flex-direction: column;
-			min-height: 0;
-			min-width: 0;
+			align-items: center;
+			justify-content: center;
+		}
+		#writingWorkspace {
+			grid-area: writingWorkspace;
 			
-			#sidebarHeader {
-				border-top: 1px solid $primaryLight;
-				border-bottom: 1px solid $primaryLight;
-			}
+			display: grid;
+			grid-template-rows: auto;
+			grid-template-columns: 234px auto;
+			grid-template-areas: "workspaceSidebar workspaceView";
+			overflow: hidden;
+			position: relative;
 			
-			#sidebarContent {
-				height: auto;
-				min-height: 0;
-				width: 100%;
-				overflow-y: auto;
+			#workspaceSidebar {
+				grid-area: workspaceSidebar;
 				
-				&::-webkit-scrollbar-track {
-					background: $primary;
-				}
-				&::-webkit-scrollbar-thumb {
-					background-color: darken( $primary, 11% );
-				}
-			}
-		}
-		
-		#workspaceView {
-			grid-area: workspaceView;
-			display: flex;
-			flex-direction: column;
-			min-height: 0;
-			min-width: 0;
-			
-			#view {
-				padding: 10px;
-				height: auto;
+				background: $primary;
+				color: #FFFFFF;
+				
+				display: flex;
+				flex-direction: column;
 				min-height: 0;
-				max-height: 100%;
-				overflow-y: auto;
-				overflow-x: hidden;
+				min-width: 0;
+				
+				#sidebarHeader {
+					border-top: 1px solid $primaryLight;
+					border-bottom: 1px solid $primaryLight;
+				}
+				
+				#sidebarContent {
+					height: auto;
+					min-height: 0;
+					width: 100%;
+					overflow-y: auto;
+					
+					&::-webkit-scrollbar-track {
+						background: $primary;
+					}
+					&::-webkit-scrollbar-thumb {
+						background-color: darken( $primary, 11% );
+					}
+				}
+			}
+			
+			#workspaceView {
+				grid-area: workspaceView;
+				display: flex;
+				flex-direction: column;
+				min-height: 0;
+				min-width: 0;
+				
+				#view {
+					padding: 10px;
+					height: auto;
+					min-height: 0;
+					max-height: 100%;
+					overflow-y: auto;
+					overflow-x: hidden;
+				}
 			}
 		}
+		#writingBanners {
+			grid-area: writingBanners;
+		}
 	}
-	#writingBanners {
-		grid-area: writingBanners;
-	}
-}
-
+	
+	
+	// custom styles
 	#chapterList {
-		
 		li {
-			&.active {
-				// background-color: $primary;
-			}
 			&:hover {
 				cursor: pointer;
 			}
@@ -205,12 +241,6 @@ body {
 				padding-left: 10px;
 			}
 		}
-	}
-	
-	
-	// Custom styles
-	#view {
-		
 	}
 	
 }

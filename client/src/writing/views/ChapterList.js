@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import AddChapter from '../modals/AddChapter'
 import AddSection from '../modals/AddSection'
 
@@ -9,6 +10,18 @@ function ChapterList(props) {
 		selectedChapterData, onChapterSelect,
 		selectedSectionData, onSectionSelect,
 	} = useContext(AppContext)
+	const { isEditing, setEditingErrorMessage } = useContext(EditingContext)
+	
+	const handleSectionSelect = (id) => {
+		if(isEditing) setEditingErrorMessage("Save before switching sections")
+		else onSectionSelect(id)
+	}
+	
+	const handleChapterSelect = (id) => {
+		if(isEditing) setEditingErrorMessage("Save before switching chapters")
+		else onChapterSelect(id)
+	}
+	
 	return (
 		<>
 			<div id="sidebarHeader" className="p-sm-2">
@@ -24,7 +37,7 @@ function ChapterList(props) {
 								<React.Fragment key={id}>
 									<li 
 										key={id} 
-										onClick={() => onChapterSelect(id)}
+										onClick={() => handleChapterSelect(id)}
 										className={(selectedChapterData && selectedChapterData.id===id) ? 'active' : ''}
 									>
 										{name}
@@ -39,7 +52,7 @@ function ChapterList(props) {
 													{sections.map( section => (
 														<li 
 															key={section.id}
-															onClick={() => onSectionSelect(section.id)}
+															onClick={() => handleSectionSelect(section.id)}
 															className={(selectedSectionData && selectedSectionData.id===section.id) ? 'active' : ''}
 														>
 															{section.name}

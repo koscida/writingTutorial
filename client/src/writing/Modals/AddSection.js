@@ -6,13 +6,18 @@ import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 	
 const AddSection = () => {
-	const [show, setShow] = useState(false)
+	const [isShown, setIsShown] = useState(false)
 	const { onSectionCreate } = useContext(AppContext)
-	const { isEditing, setIsEditing } = useContext(EditingContext)
+	const { isEditing, setIsEditing, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleToggle = () => {
-		setIsEditing(!show)
-		setShow(!show)
+		if (isEditing && !isShown) {
+			setEditingErrorMessage("Cannot create section when editing. Save content first.")
+		} else {
+			// forces state
+			setIsEditing(!isShown)
+			setIsShown(!isShown)
+		}
 	}
 	
 	const handleCreate = values => {
@@ -27,7 +32,7 @@ const AddSection = () => {
 				onClick={handleToggle}
 				size="sm"
 			>New Section</Button>
-			<Modal show={show} onHide={handleToggle}>
+			<Modal show={isShown} onHide={handleToggle}>
 				<Modal.Header closeButton>
 					<Modal.Title>Create New Section</Modal.Title>
 				</Modal.Header>
@@ -38,6 +43,7 @@ const AddSection = () => {
 					/>
 				</Modal.Body>
 			</Modal>
+			
 		</>
 	)
 }

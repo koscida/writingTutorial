@@ -88,6 +88,7 @@ const SectionView = () => {
 		const { id } = selectedSectionData
 		return <	>
 				<Editor 
+					className="editorWritingPad"
 					key={`editor_${id}`}
 					editorState={editorState} 
 					onChange={handleEditorChange}
@@ -96,7 +97,7 @@ const SectionView = () => {
 					ref={(element) => { setEditor(element) }}
 					placeholder="Tell a story..."
 				/>
-				<Toolbar key={`toolbar_${id}`}>
+				<Toolbar key={`toolbar_${id}`} className="editorToolbar">
 					{(externalProps) => (
 						<React.Fragment>
 							<BoldButton {...externalProps} />
@@ -161,19 +162,10 @@ const SectionView = () => {
 		</>
 	}
 	
-	// useEfect
-	// componentDidUpdate(prevProps, prevState) {
-	// 	const currID = this.context.selectedSectionData.id
-	// 	const prevId = prevState.id 
-	// 	if(currID !== prevId) {
-	// 		//Perform some operation here
-	// 		this.setState({
-	// 			editorState : this.setEditorState(),
-	// 			editMode : false,
-	// 			id : currID
-	// 		});
-	// 	}
-	// }
+	useEffect( () => {
+		setEditorState(initEditorState())
+		setEditMode(false)
+	}, [selectedSectionData])
 	
 	return (
 		<>
