@@ -1,48 +1,45 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import SectionMetaForm from '../forms/SectionMetaForm'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 	
-class AddSection extends React.Component {
-	static contextType = AppContext
+const AddSection = () => {
+	const [show, setShow] = useState(false)
+	const { onSectionCreate } = useContext(AppContext)
+	const { isEditing, setIsEditing } = useContext(EditingContext)
 	
-	state = {
-		show: false,
+	const handleToggle = () => {
+		setIsEditing(!show)
+		setShow(!show)
 	}
 	
-	handleToggle = () => {
-		this.setState({show: !this.state.show})
+	const handleCreate = values => {
+		handleToggle()
+		onSectionCreate(values)
 	}
 	
-	handleCreate = values => {
-		this.handleToggle()
-		this.context.onSectionCreate(values)
-		// console.log(values)
-	}
-	
-	render() {
-		return (
-			<>
-				<Button 
-					variant="light" 
-					onClick={this.handleToggle}
-					size="sm"
-				>New Section</Button>
-				<Modal show={this.state.show} onHide={this.handleToggle}>
-					<Modal.Header closeButton>
-						<Modal.Title>Create New Section</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<SectionMetaForm
-							onSave={this.handleCreate}
-							onCancel={this.handleToggle}
-						/>
-					</Modal.Body>
-				</Modal>
-			</>
-		)
-	}
+	return (
+		<>
+			<Button 
+				variant="light" 
+				onClick={handleToggle}
+				size="sm"
+			>New Section</Button>
+			<Modal show={show} onHide={handleToggle}>
+				<Modal.Header closeButton>
+					<Modal.Title>Create New Section</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<SectionMetaForm
+						onSave={handleCreate}
+						onCancel={handleToggle}
+					/>
+				</Modal.Body>
+			</Modal>
+		</>
+	)
 }
 
 export default AddSection

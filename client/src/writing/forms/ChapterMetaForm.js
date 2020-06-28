@@ -6,7 +6,9 @@ import { Formik } from 'formik';
 import * as yup from 'yup'
 
 const ChapterMetaForm = ({ onSave, onCancel }) => {
-	const { selectedChapterData: { id, name, description } } = useContext(AppContext)
+	const { selectedChapterData } = useContext(AppContext)
+	
+	const { id, name, description } = (selectedChapterData) || {id:null,name:null,description:null}
 	
 	return (
 		<>

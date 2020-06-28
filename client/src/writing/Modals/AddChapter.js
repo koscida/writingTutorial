@@ -1,50 +1,48 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import ChapterMetaForm from '../forms/ChapterMetaForm'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 
-class AddChapter extends React.Component {
-	static contextType = AppContext
+const AddChapter = () => {
+	const [show, setShow] = useState(false)
+	const { onChapterCreate } = useContext(AppContext)
+	const { isEditing, setIsEditing } = useContext(EditingContext)
 	
-	state = {
-		show: false
+	const handleToggle = () => {
+		setIsEditing(!show)
+		setShow(!show)
 	}
 	
-	handleToggle = () => {
-		this.setState({ show : !this.state.show })
-	}
-	
-	handleCreate = values => {
-		this.handleToggle()
-		this.context.onChapterCreate(values)
+	const handleCreate = values => {
+		handleToggle()
+		onChapterCreate(values)
 		// console.log(values)
 	}
 	
-	render() {
-		return (
-			<>
-				<Button 
-					variant="light" 
-					onClick={this.handleToggle} 
-					size="sm"
-					className="mr-sm-2"
-				>New Chapter</Button>
-				
-				<Modal show={this.state.show} onHide={this.handleToggle}>
-					<Modal.Header closeButton>
-						<Modal.Title>Create New Chapter</Modal.Title>
-					</Modal.Header>
-					<Modal.Body>
-						<ChapterMetaForm 
-							onSave={this.handleCreate}
-							onCancel={this.handleToggle}
-						/>
-					</Modal.Body>
-				</Modal>
-			</>
-		)
-	}
+	return (
+		<>
+			<Button 
+				variant="light" 
+				onClick={handleToggle} 
+				size="sm"
+				className="mr-sm-2"
+			>New Chapter</Button>
+			
+			<Modal show={show} onHide={handleToggle}>
+				<Modal.Header closeButton>
+					<Modal.Title>Create New Chapter</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<ChapterMetaForm 
+						onSave={handleCreate}
+						onCancel={handleToggle}
+					/>
+				</Modal.Body>
+			</Modal>
+		</>
+	)
 }
 
 export default AddChapter

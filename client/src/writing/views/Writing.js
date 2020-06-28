@@ -1,5 +1,6 @@
 import React from 'react';
 import AppContext from '../contexts/AppContext'
+import TopNav from './TopNav'
 import ChapterList from './ChapterList'
 import WelcomeView from './WelcomeView'
 import ChapterView from './ChapterView'
@@ -18,7 +19,9 @@ class Writing extends React.Component {
 		return (
 			<div id="writingContainer">
 			
-				<div id="writingTopNav"></div>
+				<div id="writingTopNav">
+					<TopNav />
+				</div>
 				
 				<div id="writingWorkspace">
 				

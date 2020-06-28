@@ -71,7 +71,7 @@ body {
 			}
 		}
 		&+ .tab-content {
-			padding: 10px 0;
+			padding: 10px 0 0;
 		}
 	}
 	
@@ -81,7 +81,7 @@ body {
 		border: 1px solid #ddd;
 		box-shadow: 0px 1px 3px 0px rgba(220,220,220,1);
 		height: calc( 100vh - 38px - (10px * 2) - (42px + 10px) - 36px - (38px + 8px) ); 
-		//300px; //FIXME: do proper calculation (100 - topnav - viewpadding - (tabs+pad) - toolbar - (savebtn+pad)
+		//300px; //FIXME: do proper calculation (100 - topnav - (viewpadding) - (tabs+pad) - toolbar - (savebtn+pad)
 		overflow-y: scroll;
 		padding: 20px;
 		font-size: 18px;
@@ -104,7 +104,7 @@ body {
 	{
 		width: 10px;
 		border-radius: 10px;
-		background-color: #F5F5F5;
+		background-color: $primaryLight;
 	}
 
 	#writingContainer {
@@ -156,7 +156,7 @@ body {
 				height: auto;
 				min-height: 0;
 				width: 100%;
-				overflow-y: scroll;
+				overflow-y: auto;
 				
 				&::-webkit-scrollbar-track {
 					background: $primary;
@@ -169,9 +169,18 @@ body {
 		
 		#workspaceView {
 			grid-area: workspaceView;
+			display: flex;
+			flex-direction: column;
+			min-height: 0;
+			min-width: 0;
 			
 			#view {
 				padding: 10px;
+				height: auto;
+				min-height: 0;
+				max-height: 100%;
+				overflow-y: auto;
+				overflow-x: hidden;
 			}
 		}
 	}
@@ -181,9 +190,6 @@ body {
 }
 
 	#chapterList {
-		// background-color: $backgroundColorSecondary;
-		// height: 100vh;
-		// overflow-y: scroll;
 		
 		li {
 			&.active {

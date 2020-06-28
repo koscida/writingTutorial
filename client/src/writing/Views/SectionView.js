@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import SectionMetaForm from '../forms/SectionMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
@@ -37,62 +38,62 @@ const toolbarPlugin = createToolbarPlugin()
 const { Toolbar } = toolbarPlugin;
 const plugins = [toolbarPlugin]
 
-class SectionView extends React.Component {
-	static contextType = AppContext
+const SectionView = () => {
+	const { selectedSectionData, onSectionTextSave, onSectionMetaSave } = useContext(AppContext)
+	const { isEditing, setIsEditing } = useContext(EditingContext)
 	
-	state = {
-		editMode : false,
-		editorState : this.setEditorState(),
-		id : this.context.selectedSectionData.id
-	}
-	
-	setEditorState() {
-		const { text } = this.context.selectedSectionData
+	const initEditorState = () => {
+		const { text } = selectedSectionData
 		return text 
 			? EditorState.createWithContent(convertFromRaw(JSON.parse(text))) 
 			: EditorState.createEmpty()
 	}
 	
-	handleEditToggle = () => {
-		this.setState({ editMode: !this.state.editMode })
+	const [editMode, setEditMode] = useState(false)
+	const [editorState, setEditorState] = useState(initEditorState())
+	const [id, setId] = useState(selectedSectionData.id)
+	const [editor, setEditor] = useState(null)
+	
+	
+	const handleEditToggle = () => {
+		setIsEditing(!editMode)
+		setEditMode(!editMode)
 	}
 	
-	handleEditorChange = editorState => {
-		this.setState({ editorState });
+	const handleEditorChange = editorState => {
+		setEditorState(editorState);
 	}
 	
-	handleTextSave = () => {
-		const rawEditorState = JSON.stringify( convertToRaw(this.state.editorState.getCurrentContent()) )
-		// const rawEditorState = this.state.editorState
-		this.context.onSectionTextSave({
-			...this.context.selectedSectionData,
+	const handleTextSave = () => {
+		const rawEditorState = JSON.stringify( convertToRaw(editorState.getCurrentContent()) )
+		onSectionTextSave({
+			...selectedSectionData,
 			text: rawEditorState
 		})
 	}
 	
-	handleMetaSave = values => {
-		// console.log("handleMetaSave", values)
-		this.handleEditToggle()
-		this.context.onSectionMetaSave({
-			...this.context.selectedSectionData,
+	const handleMetaSave = values => {
+		handleEditToggle()
+		onSectionMetaSave({
+			...selectedSectionData,
 			...values
 		})
 	}
 	
-	focus = () => {
-		this.editor.focus();
+	const focus = () => {
+		editor.focus();
 	};
 	
-	renderEditor() {
-		const { selectedSectionData: { id } } = this.context
+	const renderEditor = () => {
+		const { id } = selectedSectionData
 		return <	>
 				<Editor 
 					key={`editor_${id}`}
-					editorState={this.state.editorState} 
-					onChange={this.handleEditorChange}
+					editorState={editorState} 
+					onChange={handleEditorChange}
 					plugins={plugins}
 					spellCheck={true}
-					ref={(element) => { this.editor = element; }}
+					ref={(element) => { setEditor(element) }}
 					placeholder="Tell a story..."
 				/>
 				<Toolbar key={`toolbar_${id}`}>
@@ -115,12 +116,12 @@ class SectionView extends React.Component {
 						</React.Fragment>
 					)}
 				</Toolbar>
-				<Button variant="primary" onClick={this.handleTextSave} className="my-md-2">Save</Button>
+				<Button variant="primary" onClick={handleTextSave} className="mt-md-2">Save</Button>
 		</>
 	}
 	
-	renderNoEditMeta() {
-		const { selectedSectionData: { name, description, chapterName} } = this.context
+	const renderNoEditMeta = () => {
+		const { name, description, chapterName} = selectedSectionData
 		return (
 			<>
 				<Row className="my-sm-3">
@@ -138,7 +139,7 @@ class SectionView extends React.Component {
 				<Row className="my-sm-3"><Col>
 					<Button 
 						variant="primary" 
-						onClick={this.handleEditToggle} 
+						onClick={handleEditToggle} 
 					>
 						Edit
 					</Button>
@@ -147,46 +148,45 @@ class SectionView extends React.Component {
 		)
 	}
 	
-	renderEditMeta() {
+	const renderEditMeta = () => {
 		return <>
-			<Row><Col>
-				<SectionMetaForm
-					onSave={this.handleMetaSave}
-					onCancel={this.handleEditToggle}
-				/>
-			</Col></Row>
+			<Row>
+				<Col>
+					<SectionMetaForm
+						onSave={handleMetaSave}
+						onCancel={handleEditToggle}
+					/>
+				</Col>
+			</Row>
 		</>
 	}
 	
-	componentDidUpdate(prevProps, prevState) {
-		const currID = this.context.selectedSectionData.id
-		const prevId = prevState.id 
-		if(currID !== prevId) {
-			//Perform some operation here
-			this.setState({
-				editorState : this.setEditorState(),
-				editMode : false,
-				id : currID
-			});
-		}
-	}
+	// useEfect
+	// componentDidUpdate(prevProps, prevState) {
+	// 	const currID = this.context.selectedSectionData.id
+	// 	const prevId = prevState.id 
+	// 	if(currID !== prevId) {
+	// 		//Perform some operation here
+	// 		this.setState({
+	// 			editorState : this.setEditorState(),
+	// 			editMode : false,
+	// 			id : currID
+	// 		});
+	// 	}
+	// }
 	
-	render() {
-		const { editMode } = this.state
-		// TODO: add chapter info to section data for: breadcrumbs
-		return (
-			<>
-			<Tabs defaultActiveKey="editor" className="viewTabs">
-				<Tab eventKey="editor" title="Editor">
-					{this.renderEditor()}
-				</Tab>
-				<Tab eventKey="meta" title="Meta">
-					{ editMode ? this.renderEditMeta() : this.renderNoEditMeta() }
-				</Tab>
-			</Tabs>
-			</>
-		)
-	}
+	return (
+		<>
+		<Tabs defaultActiveKey="editor" className="viewTabs">
+			<Tab eventKey="editor" title="Editor">
+				{renderEditor()}
+			</Tab>
+			<Tab eventKey="meta" title="Meta">
+				{ editMode ? renderEditMeta() : renderNoEditMeta() }
+			</Tab>
+		</Tabs>
+		</>
+	)
 }
 
 

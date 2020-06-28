@@ -1,45 +1,45 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import ChapterMetaForm from '../forms/ChapterMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 
-class ChapterView extends React.Component {
-	static contextType = AppContext
+const ChapterView = () => {
+	const [editMode, setEditMode] = useState(false)
+	const { selectedChapterData, onChapterMetaSave } = useContext(AppContext)
+	const { isEditing, setIsEditing } = useContext(EditingContext)
 	
-	state = {
-		editMode : false,
+	const handleEditToggle = () => {
+		setIsEditing(!editMode)
+		setEditMode(!editMode)
 	}
 	
-	handleEditToggle = () => {
-		this.setState({ editMode: !this.state.editMode })
-	}
-	
-	handleMetaSave = values => {
+	const handleMetaSave = values => {
 		// console.log("handleMetaSave", values)
-		this.handleEditToggle()
-		this.context.onChapterMetaSave({
-			...this.context.selectedChapterData,
+		handleEditToggle()
+		onChapterMetaSave({
+			...selectedChapterData,
 			...values
 		})
 		
 	}
 	
-	renderEditMeta() {
+	const renderEditMeta = () => {
 		return <>
 			<Row><Col>
 				<ChapterMetaForm
-					onSave={this.handleMetaSave}
-					onCancel={this.handleEditToggle}
+					onSave={handleMetaSave}
+					onCancel={handleEditToggle}
 				/>
 			</Col></Row>
 		</>
 	}
 	
-	renderNoEditMeta() {
-		const { selectedChapterData: { name, description } } = this.context
+	const renderNoEditMeta = () => {
+		const { name, description } = selectedChapterData
 		return (
 			<>
 				<Row className="my-sm-3">
@@ -53,7 +53,7 @@ class ChapterView extends React.Component {
 				<Row className="my-sm-3"><Col>
 					<Button 
 						variant="primary" 
-						onClick={this.handleEditToggle} 
+						onClick={handleEditToggle} 
 					>
 						Edit
 					</Button>
@@ -62,15 +62,13 @@ class ChapterView extends React.Component {
 		)
 	}
 	
-	render() {
-		return (
-			<Tabs defaultActiveKey="meta" className="viewTabs">
-				<Tab eventKey="meta" title="Meta">
-					{ this.state.editMode ? this.renderEditMeta() : this.renderNoEditMeta() }
-				</Tab>
-			</Tabs>
-		)
-	}
+	return (
+		<Tabs defaultActiveKey="meta" className="viewTabs">
+			<Tab eventKey="meta" title="Meta">
+				{ editMode ? renderEditMeta() : renderNoEditMeta() }
+			</Tab>
+		</Tabs>
+	)
 
 }
 
