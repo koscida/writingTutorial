@@ -32,7 +32,7 @@ function ChapterList(props) {
 				
 				<div id="chapterList">
 					<ul key={'test'}>
-						{chapters.map( ({id, name, sections}) => {
+						{chapters.map( ({id, name, sections}, idx) => {
 							return (
 								<React.Fragment key={id}>
 									<li 
@@ -40,7 +40,7 @@ function ChapterList(props) {
 										onClick={() => handleChapterSelect(id)}
 										className={(selectedChapterData && selectedChapterData.id===id) ? 'active' : ''}
 									>
-										{name}
+										{idx+1}. {name}
 									</li>
 									{sections.length > 0
 										?

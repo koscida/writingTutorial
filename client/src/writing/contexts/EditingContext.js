@@ -24,7 +24,7 @@ export const EditingContextProvider = (props) => {
 	useEffect( () => {
 		const timer = setTimeout(() => {
 			setAlertState({ isShown: false, message: 'this show not be shown' })
-		}, 3000);
+		}, 3000000);
 		return () => clearTimeout(timer);
 	}, [alertState])
 	

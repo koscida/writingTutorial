@@ -11,6 +11,8 @@ $activeLight: lighten( $active, 10% );
 $activeContrast: #555;
 
 $danger: #cc858f; //#cc9187;
+$dangerLight: lighten($danger, 20%);
+$dangerDark: darken($danger, 20%);
 
 body {
 	
@@ -65,6 +67,11 @@ body {
 		position: absolute;
 		top: 20px;
 		right: 20px;
+	}
+	.alert-danger {
+		color: $dangerDark;
+		background-color: $dangerLight;
+		border-color: $danger;
 	}
 	
 	// overwrite bootsrap tabs
