@@ -19,7 +19,10 @@ const AddSection = () => {
 				onClick={handleToggle}
 				size="sm"
 			>New Section</Button>
-			<Modal show={editingState.createSection} onHide={handleToggle}>
+			<Modal 
+				show={editingState.createSection} 
+				onHide={() => setEditingState({...editingState, createSection: false})}
+			>
 				<Modal.Header closeButton>
 					<Modal.Title>Create New Section</Modal.Title>
 				</Modal.Header>

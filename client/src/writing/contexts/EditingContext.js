@@ -12,7 +12,7 @@ export const EditingContextProvider = (props) => {
 	})
 	const [alertState, setAlertState] = useState({ 
 		isShown: false, 
-		message: 'this show not be shown', 
+		message: '', 
 		variant: 'danger' 
 	})
 	
@@ -34,7 +34,7 @@ export const EditingContextProvider = (props) => {
 	
 	useEffect( () => {
 		const timer = setTimeout(() => {
-			setAlertState({ isShown: false, message: 'this show not be shown' })
+			setAlertState({ isShown: false, message: '' })
 		}, 3000);
 		return () => clearTimeout(timer);
 	}, [alertState])

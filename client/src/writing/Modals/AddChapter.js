@@ -21,7 +21,10 @@ const AddChapter = () => {
 				className="mr-sm-2"
 			>New Chapter</Button>
 			
-			<Modal show={editingState.createChapter} onHide={handleToggle}>
+			<Modal 
+				show={editingState.createChapter} 
+				onHide={() => setEditingState({...editingState, createChapter: false})}
+			>
 				<Modal.Header closeButton>
 					<Modal.Title>Create New Chapter</Modal.Title>
 				</Modal.Header>

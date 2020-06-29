@@ -16,8 +16,9 @@ export const AppContextProvider = (props) => {
 		// TODO: check for ok status codes, assumes 200 rn
 		fetch('http://localhost:5000/writing/chapter/list')
 		.then(response => {
-			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			//console.log(data)
@@ -32,8 +33,9 @@ export const AppContextProvider = (props) => {
 	const onChapterSelect = id => {
 		fetch(`http://localhost:5000/writing/chapter/${id}`)
 		.then(response => {
-			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			//console.log(data)
@@ -49,8 +51,9 @@ export const AppContextProvider = (props) => {
 	const onSectionSelect = id => {
 		fetch(`http://localhost:5000/writing/section/${id}`)
 		.then(response => {
-			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			//console.log(data)
@@ -71,21 +74,23 @@ export const AppContextProvider = (props) => {
 			order=${chapters[chapters.length-1].order + 1}
 		`)
 		.then(response => {
-			//console.log(response)
-			return response.json()
-		})
-		.then( ({ data }) => {
-			// console.log(data)
-			getChapters()
-			onChapterSelect(data.insertId)
-			
+			// console.log("response", response)
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
+		}).then(results => {
+			let {data} = results
+			// console.log(results)
 			setEditingState({...editingState, createChapter: false})
 			setEditingSuccessMessage("Chapter created!")
+			getChapters()
+			onChapterSelect(data.insertId)
 		})
 		.catch(error => {
 			console.log(error)
-			setEditingErrorMessage("Something went wrong, could not create section.")
+			setEditingErrorMessage("Something went wrong, could not create section. (1)")
 		})
+		
 	}
 	
 	const onSectionCreate = ({ name, description, chapterId }) => {
@@ -103,7 +108,9 @@ export const AppContextProvider = (props) => {
 		fetch(FETCH_URL)
 		.then(response => {
 			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			// console.log(data)
@@ -126,7 +133,9 @@ export const AppContextProvider = (props) => {
 		`)
 		.then(response => {
 			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			// console.log(data)
@@ -159,7 +168,9 @@ export const AppContextProvider = (props) => {
 		`)
 		.then(response => {
 			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			setEditingState({...editingState, meta: false})
@@ -183,7 +194,9 @@ export const AppContextProvider = (props) => {
 		`)
 		.then(response => {
 			//console.log(response)
-			return response.json()
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
 			setEditingState({...editingState, meta: false})
