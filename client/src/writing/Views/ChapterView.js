@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import AppContext from '../contexts/AppContext'
 import EditingContext from '../contexts/EditingContext'
 import ChapterMetaForm from '../forms/ChapterMetaForm'
@@ -8,33 +8,20 @@ import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 
 const ChapterView = () => {
-	const [editMode, setEditMode] = useState(false)
-	const { selectedChapterData, onChapterMetaSave } = useContext(AppContext)
-	const { isEditing, setIsEditing } = useContext(EditingContext)
+	const { selectedChapterData } = useContext(AppContext)
+	const { isEditing, editingState, setEditingState } = useContext(EditingContext)
 	
-	const handleEditToggle = () => {
-		setIsEditing(!editMode)
-		setEditMode(!editMode)
-	}
-	
-	const handleMetaSave = values => {
-		// console.log("handleMetaSave", values)
-		handleEditToggle()
-		onChapterMetaSave({
-			...selectedChapterData,
-			...values
-		})
-		
+	const handleEditMetaToggle = () => {
+		setEditingState({...editingState, meta: !editingState.meta})
 	}
 	
 	const renderEditMeta = () => {
 		return <>
-			<Row><Col>
-				<ChapterMetaForm
-					onSave={handleMetaSave}
-					onCancel={handleEditToggle}
-				/>
-			</Col></Row>
+			<Row>
+				<Col>
+					<ChapterMetaForm context='edit' />
+				</Col>
+			</Row>
 		</>
 	}
 	
@@ -53,7 +40,7 @@ const ChapterView = () => {
 				<Row className="my-sm-3"><Col>
 					<Button 
 						variant="primary" 
-						onClick={handleEditToggle} 
+						onClick={handleEditMetaToggle} 
 					>
 						Edit
 					</Button>
@@ -65,7 +52,7 @@ const ChapterView = () => {
 	return (
 		<Tabs defaultActiveKey="meta" className="viewTabs">
 			<Tab eventKey="meta" title="Meta">
-				{ editMode ? renderEditMeta() : renderNoEditMeta() }
+				{ editingState.meta ? renderEditMeta() : renderNoEditMeta() }
 			</Tab>
 		</Tabs>
 	)

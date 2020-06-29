@@ -1,13 +1,15 @@
 import React, { useContext } from 'react'
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 import { Formik } from 'formik';
 import * as yup from 'yup'
 
-const SectionMetaForm = ({ onSave, onCancel }) => {
-	const { chapters, selectedSectionData } = useContext(AppContext)
-	const { id, name, chapterId, description } = selectedSectionData || { id:null, name:null, chapterId:null, description:null }
+const SectionMetaForm = ({context}) => {
+	const { chapters, selectedSectionData, onSectionCreate, onSectionMetaSave } = useContext(AppContext)
+	const { editingState, setEditingState } = useContext(EditingContext)
+	const { id, name, chapterId, description } = selectedSectionData || { id:null, name:'', chapterId:null, description:'' }
 	
 	return (
 		<>
@@ -16,7 +18,7 @@ const SectionMetaForm = ({ onSave, onCancel }) => {
 					name : name,
 					id : id,
 					chapterId : chapterId,
-					description : description || '',
+					description : description,
 					chapters : chapters
 				}}
 				validationSchema={yup.object({
@@ -27,9 +29,9 @@ const SectionMetaForm = ({ onSave, onCancel }) => {
 						.required('Required'),
 				})}
 				onSubmit = {(values, { setSubmitting }) => {
-					onSave({
-						...values
-					})
+					context === 'create'
+						? onSectionCreate(values)
+						: onSectionMetaSave(values)
 				}}
 			>{({
 				handleSubmit,
@@ -97,7 +99,10 @@ const SectionMetaForm = ({ onSave, onCancel }) => {
 					</Button>
 					<Button 
 						variant="outline-danger" 
-						onClick={onCancel}
+						onClick={ () => (context==='create')
+							? setEditingState({...editingState, createSection: false}) 
+							: setEditingState({...editingState, meta: false}) 
+						}
 					>
 						Cancel
 					</Button>

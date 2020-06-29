@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
 import AppContext from '../contexts/AppContext'
+import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 import { Formik } from 'formik';
 import * as yup from 'yup'
 
-const ChapterMetaForm = ({ onSave, onCancel }) => {
-	const { selectedChapterData } = useContext(AppContext)
-	
-	const { id, name, description } = (selectedChapterData) || {id:null,name:null,description:null}
+const ChapterMetaForm = ({context}) => {
+	const { selectedChapterData, onChapterCreate, onChapterMetaSave } = useContext(AppContext)
+	const { editingState, setEditingState } = useContext(EditingContext)
+	const { id, name, description } = (selectedChapterData) || {id:null,name:'',description:''}
 	
 	return (
 		<>
@@ -16,7 +17,7 @@ const ChapterMetaForm = ({ onSave, onCancel }) => {
 				initialValues = {{
 					name : name,
 					id : id,
-					description : description || '',
+					description : description,
 				}}
 				validationSchema={yup.object({
 					name: yup.string()
@@ -24,9 +25,9 @@ const ChapterMetaForm = ({ onSave, onCancel }) => {
 						.required('Required'),
 				})}
 				onSubmit = {(values, { setSubmitting }) => {
-					onSave({
-						...values
-					})
+					context === 'create'
+						? onChapterCreate(values)
+						: onChapterMetaSave(values)
 				}}
 			>{({
 				handleSubmit,
@@ -79,7 +80,10 @@ const ChapterMetaForm = ({ onSave, onCancel }) => {
 					</Button>
 					<Button 
 						variant="outline-danger" 
-						onClick={onCancel}
+						onClick={ () => (context==='create')
+							? setEditingState({...editingState, createChapter: false}) 
+							: setEditingState({...editingState, meta: false}) 
+						}
 					>
 						Cancel
 					</Button>

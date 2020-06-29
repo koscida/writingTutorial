@@ -7,10 +7,10 @@ import '../styles/styles.scss'
 
 export default function App() {
 	return(
-		<AppContextProvider>
-			<EditingContextProvider>
+		<EditingContextProvider>
+			<AppContextProvider>
 				<Writing />
-			</EditingContextProvider>
-		</AppContextProvider>
+			</AppContextProvider>
+		</EditingContextProvider>
 	)
 }

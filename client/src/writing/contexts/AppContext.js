@@ -1,10 +1,13 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
+import EditingContext from '../contexts/EditingContext'
 
 const AppContext = createContext();
 
 export default AppContext;
 
 export const AppContextProvider = (props) => {
+	const { editingState, setEditingState, setEditingErrorMessage, setEditingSuccessMessage } = useContext(EditingContext)
+	
 	const [chapters, setChapters] = useState([])
 	const [selectedChapterData, setSelectedChapterData] = useState(null)
 	const [selectedSectionData, setSelectedSectionData] = useState(null)
@@ -20,7 +23,10 @@ export const AppContextProvider = (props) => {
 			//console.log(data)
 			setChapters(data)
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not get chapters or sections.")
+		})
 	}
 	
 	const onChapterSelect = id => {
@@ -34,7 +40,10 @@ export const AppContextProvider = (props) => {
 			setSelectedChapterData(data[0])
 			setSelectedSectionData(null)
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not select chapter.")
+		})
 	}
 	
 	const onSectionSelect = id => {
@@ -48,7 +57,10 @@ export const AppContextProvider = (props) => {
 			setSelectedSectionData(data[0])
 			setSelectedChapterData(null)
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not select section.")
+		})
 	}
 	
 	const onChapterCreate = ({name, description}) => {
@@ -66,8 +78,14 @@ export const AppContextProvider = (props) => {
 			// console.log(data)
 			getChapters()
 			onChapterSelect(data.insertId)
+			
+			setEditingState({...editingState, createChapter: false})
+			setEditingSuccessMessage("Chapter created!")
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not create section.")
+		})
 	}
 	
 	const onSectionCreate = ({ name, description, chapterId }) => {
@@ -91,8 +109,14 @@ export const AppContextProvider = (props) => {
 			// console.log(data)
 			getChapters();
 			onSectionSelect(data.insertId)
+			
+			setEditingState({...editingState, createSection: false})
+			setEditingSuccessMessage("Section created!")
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not create section.")
+		})
 	}
 	
 	const onSectionTextSave = ({ id, text }) => {
@@ -107,11 +131,17 @@ export const AppContextProvider = (props) => {
 		.then( ({ data }) => {
 			// console.log(data)
 			getChapters()
+			onSectionSelect(id)
+			
+			setEditingState({...editingState, text: false})
+			setEditingSuccessMessage("Section saved!")
 		})
-		.catch(error => console.log(error))
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not save data.")
+		})
 	}
 	
-	// handleSectionMetaSave = ({ id, name, description, chapterId }) => {
 	const onSectionMetaSave = values => {
 		const { id, name, description, chapterId } = values
 		let { order } = values
@@ -132,11 +162,15 @@ export const AppContextProvider = (props) => {
 			return response.json()
 		})
 		.then( ({ data }) => {
-			// console.log(data)
+			setEditingState({...editingState, meta: false})
+			setEditingSuccessMessage("Section saved!")
 			getChapters()
 			onSectionSelect(id)
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			setEditingErrorMessage("Something went wrong, could not save data.")
+			console.log(error)
+		})
 	}
 	
 	const onChapterMetaSave = values => {
@@ -152,11 +186,15 @@ export const AppContextProvider = (props) => {
 			return response.json()
 		})
 		.then( ({ data }) => {
-			// console.log(data)
+			setEditingState({...editingState, meta: false})
+			setEditingSuccessMessage("Chapter saved!")
 			getChapters()
 			onChapterSelect(id)
 		})
-		.catch(error => console.log(error));
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not save data.")
+		})
 	}
 	
 	return (

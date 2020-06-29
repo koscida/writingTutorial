@@ -2,6 +2,7 @@ import React from 'react';
 import AppContext from '../contexts/AppContext'
 import TopNav from './TopNav'
 import ChapterList from './ChapterList'
+import Header from './Header'
 import WelcomeView from './WelcomeView'
 import ChapterView from './ChapterView'
 import SectionView from './SectionView'
@@ -23,15 +24,20 @@ class Writing extends React.Component {
 					<TopNav />
 				</div>
 				
-				<div id="writingWorkspace">
+				<div id="writingContent">
 				
-					<div id="workspaceSidebar">
-						<ChapterList />
+					<div id="sidebar">
+						<div id="sidebarInner">
+							<ChapterList />
+						</div>
 					</div>
 					
 					{/* <div id="workspaceResizer"></div> */}
 					
-					<div id="workspaceView">
+					<div id="workspace">
+						<div id="header" className="d-sm-block d-md-none">
+							<Header />
+						</div>
 						<div id="view">
 							{( selectedChapterData 
 								? <ChapterView />

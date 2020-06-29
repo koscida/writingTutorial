@@ -158,7 +158,7 @@ body {
 		grid-template-columns: auto;
 		grid-template-areas:
 			"writingTopNav"
-			"writingWorkspace"
+			"writingContent"
 			"writingBanners";
 		
 		#writingTopNav {
@@ -171,26 +171,29 @@ body {
 			align-items: center;
 			justify-content: center;
 		}
-		#writingWorkspace {
-			grid-area: writingWorkspace;
+		#writingContent {
+			grid-area: writingContent;
 			
 			display: grid;
 			grid-template-rows: auto;
 			grid-template-columns: 234px auto;
-			grid-template-areas: "workspaceSidebar workspaceView";
+			grid-template-areas: "sidebar workspace";
 			overflow: hidden;
 			position: relative;
 			
-			#workspaceSidebar {
-				grid-area: workspaceSidebar;
+			#sidebar {
+				grid-area: sidebar;
 				
 				background: $primary;
 				color: #FFFFFF;
 				
-				display: flex;
-				flex-direction: column;
-				min-height: 0;
-				min-width: 0;
+				#sidebarInner {
+					display: flex;
+					flex-direction: column;
+					min-height: 0;
+					min-width: 0;
+					height: calc(100vh - 38px);
+				}
 				
 				#sidebarHeader {
 					border-top: 1px solid $primaryLight;
@@ -212,12 +215,15 @@ body {
 				}
 			}
 			
-			#workspaceView {
-				grid-area: workspaceView;
+			#workspace {
+				grid-area: workspace;
 				display: flex;
 				flex-direction: column;
-				min-height: 0;
-				min-width: 0;
+				height: calc(100vh - 38px);
+				
+				#header {
+					
+				}
 				
 				#view {
 					padding: 10px;
@@ -249,6 +255,24 @@ body {
 			}
 		}
 	}
+	
+}
+
+// Small breakpoint
+@media (max-width: 767px) {
+	body {
+		#writingContainer {
+			#writingContent {
+				grid-template-columns: 0 auto;
+			}
+			
+			#sidebar {
+				display: none;
+			}
+		}
+	}
+	
+	
 	
 }
 	

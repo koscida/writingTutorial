@@ -13,12 +13,12 @@ function ChapterList(props) {
 	const { isEditing, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleSectionSelect = (id) => {
-		if(isEditing) setEditingErrorMessage("Save before switching sections")
+		if(isEditing()) setEditingErrorMessage("Save before switching sections")
 		else onSectionSelect(id)
 	}
 	
 	const handleChapterSelect = (id) => {
-		if(isEditing) setEditingErrorMessage("Save before switching chapters")
+		if(isEditing()) setEditingErrorMessage("Save before switching chapters")
 		else onChapterSelect(id)
 	}
 	
