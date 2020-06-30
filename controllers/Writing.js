@@ -1,4 +1,5 @@
 const mysqlConnection = require('../models/connection')
+const SqlString = require('sqlstring');
 
 // code started from: http://stayregular.net/blog/make-a-nodejs-api-with-mysql
 //create class
@@ -74,33 +75,26 @@ var Writing = {
 	addChapter: function (req, res) {
 		const { name, description, order } = req.query
 		// TODO: OMG do data validation
-		const INSERT_NEW_CHAPTER = `
+		const INSERT_NEW_CHAPTER = SqlString.format(`
 			INSERT INTO tutorial.chapters
 				(chapter_name, chapter_desc, chapter_order)
-			VALUES ('${name}', '${description}', ${order})
-		`;
+			VALUES (?, ?, ?)
+		`, [name, description, order]);
 		// console.log(INSERT_NEW_CHAPTER)
 		runQueryResultsHelper(req, res, INSERT_NEW_CHAPTER) //TODO: currently sends sql result to page, process successful insert
 	},
 	editChapter : (req, res) => {
-		const { id, name, description } = req.query
-		// TODO: data validation and param clean
-		let UPDATE_CHAPTER = ''
-		if(description) {
-			UPDATE_CHAPTER = `
-				UPDATE tutorial.chapters
-				SET chapter_desc = '${description}', chapter_name = '${name}'
-				WHERE chapter_id = ${id}
-			`;
-		} else {
-			UPDATE_CHAPTER = `
-				UPDATE tutorial.chapters
-				SET chapter_name = '${name}'
-				WHERE chapter_id = ${id}
-			`;
-		}
-		// console.log(UPDATE_CHAPTER)
-		runQueryResultsHelper(req, res, UPDATE_CHAPTER) //TODO: process return for successful insert
+		let UPDATE_QUERY = `UPDATE tutorial.chapters SET `
+		Object.entries(req.query).forEach( ([key, value]) => {
+			if(key !== 'id') {
+				UPDATE_QUERY += ` ${chapterModel[key].db} = ${SqlString.escape(value)}, `
+			}
+		})
+		UPDATE_QUERY = UPDATE_QUERY.slice(0, -2)
+		UPDATE_QUERY += ` WHERE chapter_id = ${SqlString.escape(req.query.id)}`
+		
+		// console.log(UPDATE_QUERY)
+		runQueryResultsHelper(req, res, UPDATE_QUERY) //TODO: process return for successful insert
 	},
 	deleteChapter: (req, res) => {
 		const { id } = req.query
@@ -108,7 +102,7 @@ var Writing = {
 		let UPDATE_SECTION = `
 			UPDATE tutorial.chapters
 			SET chapter_deleted = 1
-			WHERE chapter_id = ${id}
+			WHERE chapter_id = ${SqlString.escape(id)}
 		`;
 		// console.log(UPDATE_SECTION)
 		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
@@ -139,22 +133,17 @@ var Writing = {
 		runQueryResultsHelper(req, res, INSERT_NEW_SECTION) //TODO: process return for successful insert
 	},
 	editSection : (req, res) => {
-		
-		let UPDATE_SECTION = `UPDATE tutorial.sections SET `
-		
+		let UPDATE_QUERY = `UPDATE tutorial.sections SET `
 		Object.entries(req.query).forEach( ([key, value]) => {
 			if(key !== 'id') {
-				UPDATE_SECTION += sectionModel[key].type === 'text'
-					? ` ${sectionModel[key].db} = '${value}', `
-					: ` ${sectionModel[key].db} = ${value}, `
+				UPDATE_QUERY += ` ${sectionModel[key].db} = ${SqlString.escape(value)}, `
 			}
 		})
-		UPDATE_SECTION = UPDATE_SECTION.slice(0, -2)
+		UPDATE_QUERY = UPDATE_QUERY.slice(0, -2)
+		UPDATE_QUERY += ` WHERE section_id = ${SqlString.escape(req.query.id)}`
 		
-		UPDATE_SECTION += ` WHERE section_id = ${req.query.id}`
-		
-		// console.log("UPDATE_SECTION", UPDATE_SECTION)
-		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
+		// console.log("UPDATE_QUERY", UPDATE_QUERY)
+		runQueryResultsHelper(req, res, UPDATE_QUERY) //TODO: process return for successful insert
 	},
 	deleteSection: (req, res) => {
 		const { id } = req.query
@@ -162,7 +151,7 @@ var Writing = {
 		let UPDATE_SECTION = `
 			UPDATE tutorial.sections
 			SET section_deleted = 1
-			WHERE section_id = ${id}
+			WHERE section_id = ${SqlString.escape(id)}
 		`;
 		// console.log(UPDATE_SECTION)
 		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
@@ -271,6 +260,13 @@ function transformSectionData(s) {
 
 
 // wow, so more modeling
+const chapterModel = {
+	id 				: { db : 'chapter_id', 		type: 'int' },
+	name 				: { db : 'chapter_name', 	type: 'text' },
+	description 	: { db : 'chapter_desc',	type: 'text' },
+	order 			: { db : 'chapter_order', 	type: 'int' },
+	unorganized 	: { db : 'chapter_unorganized', 	type: 'int' },
+}
 const sectionModel = {
 	id 				: { db : 'section_id', 		type: 'int' },
 	name 				: { db : 'section_name', 	type: 'text' },
