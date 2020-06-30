@@ -7,12 +7,14 @@ $text: #212529;
 
 $active: #99e7c3;
 $activeDarken: darken( $active, 10% );
+$activeDark: darken( $active, 25% );
 $activeLight: lighten( $active, 10% );
 $activeContrast: #555;
 
 $danger: #cc858f; //#cc9187;
 $dangerLight: lighten($danger, 20%);
 $dangerDark: darken($danger, 20%);
+$dangerDarken: darken($danger, 10%);
 
 body {
 	
@@ -49,7 +51,27 @@ body {
 		border-color: $activeLight;
 		color: lighten($activeContrast, 10%);
 	}
-	
+	.btn-outline-primary {
+		background-color: transparent;
+		border-color: $activeDark;
+		color: $activeDark;
+		&:hover, &:active, &:focus,
+		&:not(:disabled):not(.disabled):active {
+			background-color: $activeDarken;
+			border-color: $activeDarken;
+			color: #fff;
+		}
+	}
+	.btn-danger {
+		background-color: $dangerDarken;
+		border-color: $dangerDarken;
+		color: #fff;
+		&:hover, &:active, &:focus,
+		&:not(:disabled):not(.disabled):active {
+			background-color: $dangerDark;
+			border-color: $dangerDark;
+		}
+	}
 	.btn-outline-danger {
 		background-color: transparent;
 		border-color: $danger;
@@ -68,6 +90,11 @@ body {
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+	.alert-primary {
+		color: $activeDark;
+		background-color: $activeLight;
+		border-color: $active;
 	}
 	.alert-danger {
 		color: $dangerDark;

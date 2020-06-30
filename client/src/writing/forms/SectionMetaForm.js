@@ -8,21 +8,21 @@ const SectionMetaForm = ({context}) => {
 	const { chapters, selectedSectionData, onSectionCreate, onSectionMetaSave } = useContext(AppContext)
 	const { editingState, setEditingState } = useContext(EditingContext)
 	const [sectionData, setSectionData] = useState({
+		...selectedSectionData,
 		id: selectedSectionData ? selectedSectionData.id : '',
 		name: selectedSectionData ? selectedSectionData.name : '',
 		description: selectedSectionData ? selectedSectionData.description : '',
 		chapterId: selectedSectionData ? selectedSectionData.chapterId : '',
 	})
 	
-	useEffect( () => {
-		console.log("in clear")
-		setSectionData({
-			id : '',
-			name : '',
-			description : '',
-			chapterId : '',
-		})
-	}, [editingState])
+	// useEffect( () => {
+	// 	setSectionData({
+	// 		id : '',
+	// 		name : '',
+	// 		description : '',
+	// 		chapterId : '',
+	// 	})
+	// }, [editingState])
 	
 	const handleSubmit = () => {
 		context === 'create'

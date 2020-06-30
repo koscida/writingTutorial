@@ -1,5 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
 import EditingContext from '../contexts/EditingContext'
+import Alert from 'react-bootstrap/Alert'
+import Button from 'react-bootstrap/Button'
 
 const AppContext = createContext();
 
@@ -11,7 +13,20 @@ export const AppContextProvider = (props) => {
 	const [chapters, setChapters] = useState([])
 	const [selectedChapterData, setSelectedChapterData] = useState(null)
 	const [selectedSectionData, setSelectedSectionData] = useState(null)
+	const [alertState, setAlertState] = useState({ 
+		isShown: false, 
+		message: '', 
+		confirm: null,
+		cancel: () => {
+			console.log("in cancel")
+			setAlertState({...alertState, isShown: false, message: '', confirm: null})
+		},
+	})
 	
+	
+	/*
+	 * Select/get functions
+	 */
 	const getChapters = () => {
 		// TODO: check for ok status codes, assumes 200 rn
 		fetch('http://localhost:5000/writing/chapter/list')
@@ -38,7 +53,7 @@ export const AppContextProvider = (props) => {
 			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
-			//console.log(data)
+			// console.log(data)
 			setSelectedChapterData(data[0])
 			setSelectedSectionData(null)
 		})
@@ -66,6 +81,14 @@ export const AppContextProvider = (props) => {
 		})
 	}
 	
+	const getUnorganizedChapterId = () => {
+		return chapters.find( c => c.unorganized === 1 ).id
+	}
+	
+	
+	/*
+	 * Chapter functions
+	 */
 	const onChapterCreate = ({name, description}) => {
 		// TODO: check for ok status codes, assumes 200 rn
 		fetch(`http://localhost:5000/writing/chapter/add?
@@ -93,6 +116,66 @@ export const AppContextProvider = (props) => {
 		
 	}
 	
+	const onChapterDelete = toDeleteChapterData => {
+		const { id, sectionsCount } = toDeleteChapterData
+		if(sectionsCount > 0) {
+			let unorganizedId = getUnorganizedChapterId()
+			const sectionsToReorganize = chapters.find( c => c.id === id ).sections
+			sectionsToReorganize.forEach( s => updateSection({id: s.id, chapterId: unorganizedId}) )
+		}
+		fetch(`http://localhost:5000/writing/chapter/delete?
+			id=${id}
+		`)
+		.then(response => {
+			//console.log(response)
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
+		})
+		.then( ({ data }) => {
+			// console.log(data)
+			getChapters()
+			setSelectedChapterData(null)
+			
+			setAlertState({...alertState, isShown: false})
+			setEditingSuccessMessage("Chapter deleted!")
+		})
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not save data.")
+		})
+	}
+	
+	const onChapterMetaSave = values => {
+		const { id, name, description } = values
+		// console.log("handleSectionMetaSave", values)
+		fetch(`http://localhost:5000/writing/chapter/edit?
+			id=${id}&
+			name=${name}&
+			description=${description}
+		`)
+		.then(response => {
+			//console.log(response)
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
+		})
+		.then( ({ data }) => {
+			setEditingState({...editingState, meta: false})
+			setEditingSuccessMessage("Chapter saved!")
+			getChapters()
+			onChapterSelect(id)
+		})
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not save data.")
+		})
+	}
+	
+	
+	/*
+	 * Section functions
+	 */
 	const onSectionCreate = ({ name, description, chapterId }) => {
 		const chap = chapters.find(c => c.id === parseInt(chapterId))
 		const order = (chap.sections.length > 0) ? chap.sections[chap.sections.length-1].order + 1 : 0
@@ -126,11 +209,37 @@ export const AppContextProvider = (props) => {
 		})
 	}
 	
+	const onSectionDelete = toDeleteSectionData => {
+		const { id, chapterId } = toDeleteSectionData
+		fetch(`http://localhost:5000/writing/section/delete?
+			id=${id}
+		`)
+		.then(response => {
+			//console.log(response)
+			if(response.ok)
+				return response.json()
+			throw new Error('Network response was not ok.');
+		})
+		.then( ({ data }) => {
+			// console.log(data)
+			getChapters()
+			onChapterSelect(chapterId)
+			
+			setAlertState({...alertState, isShown: false})
+			setEditingSuccessMessage("Section deleted!")
+		})
+		.catch(error => {
+			console.log(error)
+			setEditingErrorMessage("Something went wrong, could not save data.")
+		})
+	}
+	
 	const onSectionTextSave = ({ id, text }) => {
-		fetch(`http://localhost:5000/writing/section/edit?
+		const FETCH = `http://localhost:5000/writing/section/edit?
 			id=${id}&
 			text=${text}
-		`)
+		`;
+		fetch(FETCH)
 		.then(response => {
 			//console.log(response)
 			if(response.ok)
@@ -146,14 +255,13 @@ export const AppContextProvider = (props) => {
 			setEditingSuccessMessage("Section saved!")
 		})
 		.catch(error => {
-			console.log(error)
+			console.log(error, FETCH)
 			setEditingErrorMessage("Something went wrong, could not save data.")
 		})
 	}
 	
 	const onSectionMetaSave = values => {
-		const { id, name, description, chapterId } = values
-		let { order } = values
+		let { id, name, description, chapterId, order } = values
 		if(chapterId !== selectedSectionData.chapterId){
 			const chap = chapters.find(c => c.id === parseInt(chapterId))
 			order = (chap.sections.length > 0) ? chap.sections[chap.sections.length-1].order + 1 : 0
@@ -184,14 +292,14 @@ export const AppContextProvider = (props) => {
 		})
 	}
 	
-	const onChapterMetaSave = values => {
-		const { id, name, description } = values
-		// console.log("handleSectionMetaSave", values)
-		fetch(`http://localhost:5000/writing/chapter/edit?
-			id=${id}&
-			name=${name}&
-			description=${description}
-		`)
+	const updateSection = values => {
+		const { id } = values
+		let UPDATE_QUERY = `http://localhost:5000/writing/section/edit?`
+		Object.entries(values).forEach( ([key, value]) =>  UPDATE_QUERY += `${key}=${value}&` )
+		UPDATE_QUERY = UPDATE_QUERY.slice(0, -1)
+		// console.log(UPDATE_QUERY)
+		
+		fetch(UPDATE_QUERY)
 		.then(response => {
 			//console.log(response)
 			if(response.ok)
@@ -199,24 +307,63 @@ export const AppContextProvider = (props) => {
 			throw new Error('Network response was not ok.');
 		})
 		.then( ({ data }) => {
-			setEditingState({...editingState, meta: false})
-			setEditingSuccessMessage("Chapter saved!")
-			getChapters()
-			onChapterSelect(id)
 		})
 		.catch(error => {
+			setEditingErrorMessage("Something went wrong, could update section data.")
 			console.log(error)
-			setEditingErrorMessage("Something went wrong, could not save data.")
 		})
 	}
 	
+	
+	/*
+	 * Alert functions
+	 */
+	const setAlert = (message, confirm) => {
+		setAlertState({
+			...alertState,
+			isShown: true,
+			message, 
+			confirm, 
+		})
+	}
+	
+	const renderAlert = () => {
+		return (
+			<Alert show={alertState.isShown} variant="warning">
+				<Alert.Heading>Warning</Alert.Heading>
+				<p>{alertState.message}</p>
+				<hr />
+				<div className="d-flex justify-content-end">
+					<Button onClick={() => alertState.cancel()} variant="outline-primary" className="mr-2">
+						Cancel
+					</Button>
+					<Button onClick={() => alertState.confirm()} variant="danger">
+						Confirm
+					</Button>
+				</div>
+			</Alert>
+		)
+	}
+	
+	
+	
+	/*
+	 * Helper functions
+	 */
+	
+	
+	
 	return (
-		<AppContext.Provider value={{ 
-			chapters, getChapters, 
-			selectedChapterData, onChapterSelect, onChapterCreate, onChapterMetaSave,
-			selectedSectionData, onSectionSelect, onSectionCreate, onSectionMetaSave, onSectionTextSave 
-		}}>
-			{ props.children }
-		</AppContext.Provider>
+		<>
+			<AppContext.Provider value={{ 
+				chapters, getChapters, 
+				selectedChapterData, onChapterSelect, onChapterCreate, onChapterDelete, onChapterMetaSave,
+				selectedSectionData, onSectionSelect, onSectionCreate, onSectionDelete, onSectionMetaSave, onSectionTextSave,
+				setAlert,
+			}}>
+				{ props.children }
+			</AppContext.Provider>
+			{renderAlert()}
+		</>
 	)
 }

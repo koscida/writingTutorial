@@ -8,8 +8,19 @@ import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 
 const ChapterView = () => {
-	const { selectedChapterData } = useContext(AppContext)
+	const { selectedChapterData, onChapterDelete, setAlert } = useContext(AppContext)
 	const { isEditing, editingState, setEditingState } = useContext(EditingContext)
+	
+	const handleDelete = () => {
+		setAlert(
+			'Are you sure you want to delete this chapter?' + 
+			(selectedChapterData.sectionsCount > 0 
+				? ` -- All sections associated with this chapter will NOT be deleted, 
+					they will be moved to the unorganized category.`
+				: ''
+			),
+			() => onChapterDelete(selectedChapterData))
+	}
 	
 	const handleEditMetaToggle = () => {
 		setEditingState({...editingState, meta: !editingState.meta})
@@ -53,6 +64,8 @@ const ChapterView = () => {
 		<Tabs defaultActiveKey="meta" className="viewTabs">
 			<Tab eventKey="meta" title="Meta">
 				{ editingState.meta ? renderEditMeta() : renderNoEditMeta() }
+				<hr/>
+				<Button variant="outline-danger" onClick={handleDelete}>Delete chapter</Button>
 			</Tab>
 		</Tabs>
 	)

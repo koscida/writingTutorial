@@ -39,7 +39,7 @@ const { Toolbar } = toolbarPlugin;
 const plugins = [toolbarPlugin]
 
 const SectionView = () => {
-	const { selectedSectionData, onSectionTextSave } = useContext(AppContext)
+	const { selectedSectionData, onSectionTextSave, onSectionDelete, setAlert } = useContext(AppContext)
 	const { isEditing, editingState, setEditingState, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const initEditorState = () => {
@@ -79,10 +79,13 @@ const SectionView = () => {
 		setEditorState(initEditorState())
 	}
 	
+	const handleDelete = () => {
+		setAlert("Are you sure you want to delete this section?", () => onSectionDelete(selectedSectionData))
+	}
+	
 	const handleTabChange = (key) => {
-		if(isEditing()) {
-			setEditingErrorMessage("Save before switching tabs")
-		}else setTabKey(key)
+		if(isEditing()) setEditingErrorMessage("Save before switching tabs")
+		else setTabKey(key)
 	}
 	
 	const focus = () => {
@@ -187,6 +190,8 @@ const SectionView = () => {
 			</Tab>
 			<Tab eventKey="meta" title="Meta">
 				{ editingState.meta ? renderEditMeta() : renderNoEditMeta() }
+				<hr/>
+				<Button variant="outline-danger" onClick={handleDelete}>Delete section</Button>
 			</Tab>
 		</Tabs>
 		</>

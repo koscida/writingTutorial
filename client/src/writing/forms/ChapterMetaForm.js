@@ -8,19 +8,19 @@ const ChapterMetaForm = ({context}) => {
 	const { selectedChapterData, onChapterCreate, onChapterMetaSave } = useContext(AppContext)
 	const { editingState, setEditingState } = useContext(EditingContext)
 	const [chapterData, setChapterData] = useState({
+		...selectedChapterData,
 		id: selectedChapterData ? selectedChapterData.id : '',
 		name: selectedChapterData ? selectedChapterData.name : '',
 		description: selectedChapterData ? selectedChapterData.description : '',
 	})
 	
-	useEffect( () => {
-		console.log("in clear")
-		setChapterData({
-			id : '',
-			name : '',
-			description : ''
-		})
-	}, [editingState])
+	// useEffect( () => {
+	// 	setChapterData({
+	// 		id : '',
+	// 		name : '',
+	// 		description : ''
+	// 	})
+	// }, [editingState])
 	
 	const handleSubmit = () => {
 		context === 'create'
