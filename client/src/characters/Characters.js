@@ -1,7 +1,34 @@
-import React from 'react'
+import React from 'react';
 
-const Characters = () => {
+class Characters extends React.Component {
 	
+	componentDidMount() {
+		
+	}
+	
+	render () {
+		
+		return (
+			<div id="contentInner">
+				<div id="sidebar">
+					<div id="sidebarInner">
+						
+					</div>
+				</div>
+				
+				{/* <div id="workspaceResizer"></div> */}
+				
+				<div id="workspace">
+					<div id="header" className="d-sm-block d-md-none">
+						
+					</div>
+					<div id="view">
+						
+					</div>
+				</div>
+			</div>
+		)
+	}
 }
 
-export default Characters
+export default Characters;

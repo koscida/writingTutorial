@@ -17,31 +17,30 @@ class Writing extends React.Component {
 		const { selectedChapterData, selectedSectionData } = this.context
 		
 		return (
-			<>
+			<div id="contentInner">
+				<div id="sidebar">
+					<div id="sidebarInner">
+						<ChapterList />
+					</div>
+				</div>
 				
-					<div id="sidebar">
-						<div id="sidebarInner">
-							<ChapterList />
-						</div>
+				{/* <div id="workspaceResizer"></div> */}
+				
+				<div id="workspace">
+					<div id="header" className="d-sm-block d-md-none">
+						<Header />
 					</div>
-					
-					{/* <div id="workspaceResizer"></div> */}
-					
-					<div id="workspace">
-						<div id="header" className="d-sm-block d-md-none">
-							<Header />
-						</div>
-						<div id="view">
-							{( selectedChapterData 
-								? <ChapterView />
-								: ( selectedSectionData 
-										? <SectionView />
-										: <WelcomeView />
-									)
-							)}
-						</div>
+					<div id="view">
+						{( selectedChapterData 
+							? <ChapterView />
+							: ( selectedSectionData 
+									? <SectionView />
+									: <WelcomeView />
+								)
+						)}
 					</div>
-				</>
+				</div>
+			</div>
 		)
 	}
 }

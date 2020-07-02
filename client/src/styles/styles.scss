@@ -16,7 +16,7 @@ $dangerLight: lighten($danger, 20%);
 $dangerDark: darken($danger, 20%);
 $dangerDarken: darken($danger, 10%);
 
-body {
+//body {
 	
 	// Overwrite bootstrap and default styles
 	a {
@@ -90,6 +90,16 @@ body {
 		padding: 0;
 		background-color: transparent !important;
 		width: 100%;
+		
+		.navbar-nav .nav-link a{
+			color: rgba(255,255,255,.5);
+			&:hover {
+				color: rgba(255,255,255,.75);
+			}
+			&.active {
+				color: #fff;
+			}
+		}
 	}
 	
 	
@@ -167,6 +177,15 @@ body {
 		}
 	}
 	
+	.jumbotron {
+		margin-bottom: 0;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	
 	// set custom scroll bar
 	::-webkit-scrollbar-track
 	{
@@ -187,19 +206,18 @@ body {
 	}
 	
 	// Grid layout
-	#writingContainer {
+	#container {
 		width: 100vw;
 		height: 100vh;
 		display: grid;
-		grid-template-rows: 38px auto min-content;
+		grid-template-rows: 38px auto;
 		grid-template-columns: auto;
 		grid-template-areas:
-			"writingTopNav"
-			"writingContent"
-			"writingBanners";
+			"topNav"
+			"content";
 		
-		#writingTopNav {
-			grid-area: writingTopNav;
+		#topNav {
+			grid-area: topNav;
 			
 			background: $primaryDarken;
 			color: #FFFFFF;
@@ -208,9 +226,11 @@ body {
 			align-items: center;
 			padding: 0 10px;
 		}
-		#writingContent {
-			grid-area: writingContent;
-			
+		#content {
+			grid-area: content;
+		}
+		
+		#contentInner {
 			display: grid;
 			grid-template-rows: auto;
 			grid-template-columns: 234px auto;
@@ -272,9 +292,6 @@ body {
 				}
 			}
 		}
-		#writingBanners {
-			grid-area: writingBanners;
-		}
 	}
 	
 	
@@ -293,7 +310,7 @@ body {
 		}
 	}
 	
-}
+//}
 
 // Small breakpoint
 @media (max-width: 767px) {

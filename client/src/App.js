@@ -1,7 +1,8 @@
 import React from 'react';
+import { Switch, Route } from "react-router-dom";
+
 import { ChapterContextProvider } from './contexts/ChapterContext'
 import { EditingContextProvider } from './contexts/EditingContext'
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Home from './base/Home'
 import TopNav from './base/TopNav'
@@ -10,20 +11,18 @@ import Chapters from './chapters/Chapters'
 import Characters from './characters/Characters'
 import Themes from './themes/Themes'
 
-import './styles/styles.scss'
-
 function App() {
 	return (
-		<EditingContextProvider>
-			<ChapterContextProvider>
-				<div id="writingContainer">
-				
-					<div id="writingTopNav">
-						<TopNav />
-					</div>
-					
-					<div id="writingContent">
-						<Router>
+		<div id="container">
+		
+			<div id="topNav">
+				<TopNav />
+			</div>
+			
+			<div id="content">
+				<EditingContextProvider>
+					<ChapterContextProvider>
+						
 							<Switch>
 								<Route path="/" exact component={Home} />
 								<Route path="/chapters" component={Chapters} />
@@ -31,12 +30,12 @@ function App() {
 								<Route path="/themes" component={Themes} />
 								<Route component={Error} />
 							</Switch>
-						</Router>
-					</div>
-					
-				</div>
-			</ChapterContextProvider>
-		</EditingContextProvider>
+						
+					</ChapterContextProvider>
+				</EditingContextProvider>
+			</div>
+			
+		</div>
 	);
 }
 

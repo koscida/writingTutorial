@@ -1,21 +1,15 @@
 import React from 'react';
-import TopNav from './TopNav'
+import Jumbotron from 'react-bootstrap/Jumbotron'
+import Button from 'react-bootstrap/Button'
  
 const Home = () => {
 	return (
-		<>
-			
-				<div id="sidebar">
-					<div id="sidebarInner">
-					</div>
-				</div>
+		<Jumbotron>
+			<h1>Welcome</h1>
+			<p>
 				
-				{/* <div id="workspaceResizer"></div> */}
-				
-				<div id="workspace">
-				</div>
-		</>
-			
+			</p>
+		</Jumbotron>
 	);
 }
  
