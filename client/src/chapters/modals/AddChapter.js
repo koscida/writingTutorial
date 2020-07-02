@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import EditingContext from '../contexts/EditingContext'
+import EditingContext from '../../contexts/EditingContext'
 import ChapterMetaForm from '../forms/ChapterMetaForm'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'

@@ -1,6 +1,5 @@
 import React from 'react';
-import AppContext from '../contexts/AppContext'
-import TopNav from './TopNav'
+import ChapterContext from '../contexts/ChapterContext'
 import ChapterList from './ChapterList'
 import Header from './Header'
 import WelcomeView from './WelcomeView'
@@ -8,7 +7,7 @@ import ChapterView from './ChapterView'
 import SectionView from './SectionView'
 
 class Writing extends React.Component {
-	static contextType = AppContext
+	static contextType = ChapterContext
 	
 	componentDidMount() {
 		this.context.getChapters();
@@ -18,13 +17,7 @@ class Writing extends React.Component {
 		const { selectedChapterData, selectedSectionData } = this.context
 		
 		return (
-			<div id="writingContainer">
-			
-				<div id="writingTopNav">
-					<TopNav />
-				</div>
-				
-				<div id="writingContent">
+			<>
 				
 					<div id="sidebar">
 						<div id="sidebarInner">
@@ -48,12 +41,7 @@ class Writing extends React.Component {
 							)}
 						</div>
 					</div>
-					
-				</div>
-				
-				<div id="writingBanners"></div>
-				
-			</div>
+				</>
 		)
 	}
 }

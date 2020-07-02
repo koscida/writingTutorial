@@ -1,15 +1,15 @@
 import React, { useContext } from 'react'
-import AppContext from '../contexts/AppContext'
+import ChapterContext from '../contexts/ChapterContext'
 import EditingContext from '../contexts/EditingContext'
-import AddChapter from '../modals/AddChapter'
-import AddSection from '../modals/AddSection'
+import AddChapter from './modals/AddChapter'
+import AddSection from './modals/AddSection'
 
 function ChapterList(props) {
 	const { 
 		chapters, 
 		selectedChapterData, onChapterSelect,
 		selectedSectionData, onSectionSelect,
-	} = useContext(AppContext)
+	} = useContext(ChapterContext)
 	const { isEditing, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleSectionSelect = (id) => {

@@ -1,13 +1,13 @@
 import React, { createContext, useState, useContext } from 'react';
-import EditingContext from '../contexts/EditingContext'
+import EditingContext from './EditingContext'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 
-const AppContext = createContext();
+const ChapterContext = createContext();
 
-export default AppContext;
+export default ChapterContext;
 
-export const AppContextProvider = (props) => {
+export const ChapterContextProvider = (props) => {
 	const { editingState, setEditingState, setEditingErrorMessage, setEditingSuccessMessage } = useContext(EditingContext)
 	
 	const [chapters, setChapters] = useState([])
@@ -355,14 +355,14 @@ export const AppContextProvider = (props) => {
 	
 	return (
 		<>
-			<AppContext.Provider value={{ 
+			<ChapterContext.Provider value={{ 
 				chapters, getChapters, 
 				selectedChapterData, onChapterSelect, onChapterCreate, onChapterDelete, onChapterMetaSave,
 				selectedSectionData, onSectionSelect, onSectionCreate, onSectionDelete, onSectionMetaSave, onSectionTextSave,
 				setAlert,
 			}}>
 				{ props.children }
-			</AppContext.Provider>
+			</ChapterContext.Provider>
 			{renderAlert()}
 		</>
 	)

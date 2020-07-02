@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import AppContext from '../contexts/AppContext'
+import ChapterContext from '../contexts/ChapterContext'
 import EditingContext from '../contexts/EditingContext'
-import SectionMetaForm from '../forms/SectionMetaForm'
+import SectionMetaForm from './forms/SectionMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
@@ -39,7 +39,7 @@ const { Toolbar } = toolbarPlugin;
 const plugins = [toolbarPlugin]
 
 const SectionView = () => {
-	const { selectedSectionData, onSectionTextSave, onSectionDelete, setAlert } = useContext(AppContext)
+	const { selectedSectionData, onSectionTextSave, onSectionDelete, setAlert } = useContext(ChapterContext)
 	const { isEditing, editingState, setEditingState, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const initEditorState = () => {

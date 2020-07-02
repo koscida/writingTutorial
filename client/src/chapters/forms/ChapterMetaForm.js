@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import AppContext from '../contexts/AppContext'
-import EditingContext from '../contexts/EditingContext'
+import ChapterContext from '../../contexts/ChapterContext'
+import EditingContext from '../../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 
 const ChapterMetaForm = ({context}) => {
-	const { selectedChapterData, onChapterCreate, onChapterMetaSave } = useContext(AppContext)
+	const { selectedChapterData, onChapterCreate, onChapterMetaSave } = useContext(ChapterContext)
 	const { editingState, setEditingState } = useContext(EditingContext)
 	const [chapterData, setChapterData] = useState({
 		...selectedChapterData,

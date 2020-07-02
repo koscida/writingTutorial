@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import AppContext from '../contexts/AppContext'
+import ChapterContext from '../contexts/ChapterContext'
 
 const Header = () => {
-	const { selectedSectionData, selectedChapterData, } = useContext(AppContext)
+	const { selectedSectionData, selectedChapterData, } = useContext(ChapterContext)
 	
 	return (
 		selectedChapterData 

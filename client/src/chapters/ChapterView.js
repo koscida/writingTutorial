@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import AppContext from '../contexts/AppContext'
+import ChapterContext from '../contexts/ChapterContext'
 import EditingContext from '../contexts/EditingContext'
-import ChapterMetaForm from '../forms/ChapterMetaForm'
+import ChapterMetaForm from './forms/ChapterMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 
 const ChapterView = () => {
-	const { selectedChapterData, onChapterDelete, setAlert } = useContext(AppContext)
+	const { selectedChapterData, onChapterDelete, setAlert } = useContext(ChapterContext)
 	const { isEditing, editingState, setEditingState } = useContext(EditingContext)
 	
 	const handleDelete = () => {
