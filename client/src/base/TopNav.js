@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link, NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 const TopNav = () => {
-	const [navKey, setNavKey] = useState("home")
 	
 	return (
 		<Navbar bg="dark" expand="lg" variant="dark">
@@ -13,10 +12,7 @@ const TopNav = () => {
 			
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
-				<Nav	
-					// activeKey={navKey}
-					// onSelect={ key => {console.log(key); setNavKey(key)} }
-				>
+				<Nav>
 					<Nav.Item>
 						<Nav.Link>
 							<NavLink to="/chapters" activeClassName="active">Chapters</NavLink>

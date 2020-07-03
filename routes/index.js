@@ -2,19 +2,15 @@ const express = require('express');
 const Router = express.Router();
 
 const HomeRoute = require("./home")
-const PeopleRoutes = require("./people")
-const ProductsRoutes = require("./products")
-const WritingRoutes = require("./writing")
+const ChaptersRoutes = require("./chapters")
+const CharactersRoutes = require("./characters")
 
 // Site Index
 Router.use("/", HomeRoute)
 
-// Testing
-Router.use("/people", PeopleRoutes)
-Router.use("/products", ProductsRoutes)
-
 // Writing
-Router.use('/writing/', WritingRoutes)
+Router.use('/chapter/', ChaptersRoutes)
+Router.use('/character/', CharactersRoutes)
 
 
 module.exports = Router;

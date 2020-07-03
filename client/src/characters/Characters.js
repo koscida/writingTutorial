@@ -1,4 +1,5 @@
 import React from 'react';
+import CharacterList from './CharacterList'
 
 class Characters extends React.Component {
 	
@@ -12,7 +13,7 @@ class Characters extends React.Component {
 			<div id="contentInner">
 				<div id="sidebar">
 					<div id="sidebarInner">
-						
+						<CharacterList />
 					</div>
 				</div>
 				

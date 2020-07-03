@@ -3,70 +3,62 @@ const SqlString = require('sqlstring');
 
 // code started from: http://stayregular.net/blog/make-a-nodejs-api-with-mysql
 //create class
-var Writing = {
+var Chapters = {
 	
 	/*
 	 * Select/get data
 	 */
-	getChaptersAndSections: function (req, res) {
-		const SELECT_CHAPTERS_AND_SECTIONS = `
-			SELECT 
-				c.chapter_id, c.chapter_name, c.chapter_order, c.chapter_unorganized,
-				s.section_id, s.section_name, s.section_order
-			FROM tutorial.chapters AS c 
-			LEFT JOIN  tutorial.sections AS s 
-			ON c.chapter_id = s.chapter_id AND s.section_deleted = 0
-			WHERE c.chapter_deleted = 0 
-			ORDER BY c.chapter_order, s.section_order 
-		`;
-		// console.log(SELECT_CHAPTERS_AND_SECTIONS)
-		runQueryResultsHelper(req, res, SELECT_CHAPTERS_AND_SECTIONS, transformChaptersAndSectionsJson)
-	},
+	// getChaptersAndSections: function (req, res) {
+	// 	const SELECT_CHAPTERS_AND_SECTIONS = `
+	// 		SELECT 
+	// 			chapter_id, chapter_name, chapter_order
+	// 		FROM tutorial.chapters
+	// 		WHERE chapter_deleted = 0 
+	// 		ORDER BY chapter_order
+	// 	`;
+	// 	// console.log(SELECT_CHAPTERS_AND_SECTIONS)
+	// 	runQueryResultsHelper(req, res, SELECT_CHAPTERS_AND_SECTIONS, transformChaptersAndSectionsJson)
+	// },
 	getAllChapters: function (req, res) {
 		const SELECT_CHAPTERS = `
-			SELECT 
-				c.chapter_id, c.chapter_name, c.chapter_desc, c.chapter_order, c.chapter_unorganized,
-				(SELECT COUNT(*) FROM tutorial.sections AS s WHERE s.chapter_id = c.chapter_id) AS sectionsCount
+			SELECT c.*
 			FROM tutorial.chapters AS c
 			WHERE c.chapter_deleted = 0
 			ORDER BY c.chapter_order
 		`;
 		runQueryResultsHelper(req, res, SELECT_CHAPTERS, transformChapterJson)
 	},
-	getAllSections: function (req, res) {
-		const SELECT_SECTIONS = `
-			SELECT * 
-			FROM tutorial.sections 
-			WHERE section_deleted = 0
-			ORDER BY section_order
-		`;
-		runQueryResultsHelper(req, res, SELECT_SECTIONS, transformSectionJson)
-	},
+	// getAllSections: function (req, res) {
+	// 	const SELECT_SECTIONS = `
+	// 		SELECT * 
+	// 		FROM tutorial.sections 
+	// 		WHERE section_deleted = 0
+	// 		ORDER BY section_order
+	// 	`;
+	// 	runQueryResultsHelper(req, res, SELECT_SECTIONS, transformSectionJson)
+	// },
 	
 	getChapter: (req, res)  => {
 		const id = parseInt(req.params.id)
 		const SELECT_CHAPTER = `
-			SELECT c.*, (SELECT COUNT(*) 
-				FROM tutorial.sections AS s 
-				WHERE s.chapter_id = c.chapter_id AND s.section_deleted = 0) 
-				AS sectionsCount
+			SELECT c.*
 			FROM tutorial.chapters as c
 			WHERE c.chapter_id = ${id}
 		`;
 		runQueryResultsHelper(req, res, SELECT_CHAPTER, transformChapterJson)
 	},
-	getSection: (req, res)  => {
-		const id = parseInt(req.params.id)
-		const SELECT_SECTION = `
-			SELECT s.*, c.chapter_name
-			FROM tutorial.sections AS s
-			LEFT JOIN tutorial.chapters AS c
-			ON c.chapter_id = s.chapter_id
-			WHERE section_id = ${id}
-		`;
-		// console.log(SELECT_SECTION)
-		runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
-	},
+	// getSection: (req, res)  => {
+	// 	const id = parseInt(req.params.id)
+	// 	const SELECT_SECTION = `
+	// 		SELECT s.*, c.chapter_name
+	// 		FROM tutorial.sections AS s
+	// 		LEFT JOIN tutorial.chapters AS c
+	// 		ON c.chapter_id = s.chapter_id
+	// 		WHERE section_id = ${id}
+	// 	`;
+	// 	// console.log(SELECT_SECTION)
+	// 	runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
+	// },
 	
 	
 	/*
@@ -83,7 +75,7 @@ var Writing = {
 		// console.log(INSERT_NEW_CHAPTER)
 		runQueryResultsHelper(req, res, INSERT_NEW_CHAPTER) //TODO: currently sends sql result to page, process successful insert
 	},
-	editChapter : (req, res) => {
+	updateChapter : (req, res) => {
 		let UPDATE_QUERY = `UPDATE tutorial.chapters SET `
 		Object.entries(req.query).forEach( ([key, value]) => {
 			if(key !== 'id') {
@@ -112,53 +104,53 @@ var Writing = {
 	/*
 	 * Section funcitons
 	 */
-	addSection: function(req, res) {
-		const { name, chapterId, order, description } = req.query
-		// TODO: data validation and param clean
-		let INSERT_NEW_SECTION = ''
-		if(description === 'null') {
-			INSERT_NEW_SECTION = `
-				INSERT INTO tutorial.sections
-					(section_name, chapter_id, section_order)
-				VALUES ('${name}', ${chapterId}, ${order})
-			`;
-		} else {
-			INSERT_NEW_SECTION = `
-				INSERT INTO tutorial.sections
-					(section_name, section_desc, chapter_id, section_order)
-				VALUES ('${name}', '${description}', ${chapterId}, ${order})
-			`;
-		}
-		// console.log(INSERT_NEW_SECTION)
-		runQueryResultsHelper(req, res, INSERT_NEW_SECTION) //TODO: process return for successful insert
-	},
-	editSection : (req, res) => {
-		let UPDATE_QUERY = `UPDATE tutorial.sections SET `
-		Object.entries(req.query).forEach( ([key, value]) => {
-			if(key !== 'id') {
-				UPDATE_QUERY += ` ${sectionModel[key].db} = ${SqlString.escape(value)}, `
-			}
-		})
-		UPDATE_QUERY = UPDATE_QUERY.slice(0, -2)
-		UPDATE_QUERY += ` WHERE section_id = ${SqlString.escape(req.query.id)}`
+	// addSection: function(req, res) {
+	// 	const { name, chapterId, order, description } = req.query
+	// 	// TODO: data validation and param clean
+	// 	let INSERT_NEW_SECTION = ''
+	// 	if(description === 'null') {
+	// 		INSERT_NEW_SECTION = `
+	// 			INSERT INTO tutorial.sections
+	// 				(section_name, chapter_id, section_order)
+	// 			VALUES ('${name}', ${chapterId}, ${order})
+	// 		`;
+	// 	} else {
+	// 		INSERT_NEW_SECTION = `
+	// 			INSERT INTO tutorial.sections
+	// 				(section_name, section_desc, chapter_id, section_order)
+	// 			VALUES ('${name}', '${description}', ${chapterId}, ${order})
+	// 		`;
+	// 	}
+	// 	// console.log(INSERT_NEW_SECTION)
+	// 	runQueryResultsHelper(req, res, INSERT_NEW_SECTION) //TODO: process return for successful insert
+	// },
+	// editSection : (req, res) => {
+	// 	let UPDATE_QUERY = `UPDATE tutorial.sections SET `
+	// 	Object.entries(req.query).forEach( ([key, value]) => {
+	// 		if(key !== 'id') {
+	// 			UPDATE_QUERY += ` ${sectionModel[key].db} = ${SqlString.escape(value)}, `
+	// 		}
+	// 	})
+	// 	UPDATE_QUERY = UPDATE_QUERY.slice(0, -2)
+	// 	UPDATE_QUERY += ` WHERE section_id = ${SqlString.escape(req.query.id)}`
 		
-		// console.log("UPDATE_QUERY", UPDATE_QUERY)
-		runQueryResultsHelper(req, res, UPDATE_QUERY) //TODO: process return for successful insert
-	},
-	deleteSection: (req, res) => {
-		const { id } = req.query
-		// TODO: data validation and param clean
-		let UPDATE_SECTION = `
-			UPDATE tutorial.sections
-			SET section_deleted = 1
-			WHERE section_id = ${SqlString.escape(id)}
-		`;
-		// console.log(UPDATE_SECTION)
-		runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
-	},
+	// 	// console.log("UPDATE_QUERY", UPDATE_QUERY)
+	// 	runQueryResultsHelper(req, res, UPDATE_QUERY) //TODO: process return for successful insert
+	// },
+	// deleteSection: (req, res) => {
+	// 	const { id } = req.query
+	// 	// TODO: data validation and param clean
+	// 	let UPDATE_SECTION = `
+	// 		UPDATE tutorial.sections
+	// 		SET section_deleted = 1
+	// 		WHERE section_id = ${SqlString.escape(id)}
+	// 	`;
+	// 	// console.log(UPDATE_SECTION)
+	// 	runQueryResultsHelper(req, res, UPDATE_SECTION) //TODO: process return for successful insert
+	// },
 	
 };
-
+module.exports = Chapters;
 
 // TODO: move all these transformations and data modeling to an actual model
 function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
@@ -230,16 +222,14 @@ function transformChaptersAndSectionsJson(resultJson) {
 
 // TODO: OMG this is terrible, refactor when have time
 // these two functions are similar, combine into better transform? (...or put into a model, geez)
-function transformChapterData(c, includeSections = false) {
+function transformChapterData(c) {
 	const newChapter = {
 		id 				: (c.chapter_id) ? parseInt(c.chapter_id) : null,
 		name 				: (c.chapter_name) ? c.chapter_name : '',
 		description 	: (c.chapter_desc) ? Buffer.from(c.chapter_desc.data).toString() : '',
+		text 				: (c.chapter_text) ? Buffer.from(c.chapter_text.data).toString() : '',
 		order 			: (c.chapter_order) ? parseInt(c.chapter_order) : '',
-		sectionsCount 	: (c.sectionsCount) ? parseInt(c.sectionsCount) : 0,
-		unorganized 	: (c.chapter_unorganized) ? parseInt(c.chapter_unorganized) : 0
 	}
-	if(includeSections) newChapter.sections = []
 	//console.log(newChapter)
 	return newChapter
 }
@@ -264,8 +254,8 @@ const chapterModel = {
 	id 				: { db : 'chapter_id', 		type: 'int' },
 	name 				: { db : 'chapter_name', 	type: 'text' },
 	description 	: { db : 'chapter_desc',	type: 'text' },
+	text 				: { db : 'chapter_text',	type: 'text' },
 	order 			: { db : 'chapter_order', 	type: 'int' },
-	unorganized 	: { db : 'chapter_unorganized', 	type: 'int' },
 }
 const sectionModel = {
 	id 				: { db : 'section_id', 		type: 'int' },
@@ -284,4 +274,3 @@ function sortOnOrder(a, b) {
 	return 0;
 }
 
-module.exports = Writing;

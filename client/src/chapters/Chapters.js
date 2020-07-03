@@ -4,7 +4,6 @@ import ChapterList from './ChapterList'
 import Header from './Header'
 import WelcomeView from './WelcomeView'
 import ChapterView from './ChapterView'
-import SectionView from './SectionView'
 
 class Writing extends React.Component {
 	static contextType = ChapterContext
@@ -33,10 +32,7 @@ class Writing extends React.Component {
 					<div id="view">
 						{( selectedChapterData 
 							? <ChapterView />
-							: ( selectedSectionData 
-									? <SectionView />
-									: <WelcomeView />
-								)
+							: <WelcomeView />
 						)}
 					</div>
 				</div>

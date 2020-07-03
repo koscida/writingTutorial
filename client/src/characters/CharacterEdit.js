@@ -1,15 +1,14 @@
 import React, { useContext } from 'react'
-import EditingContext from '../../contexts/EditingContext'
-import ChapterMetaForm from '../forms/ChapterMetaForm'
+import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 
-const AddChapter = () => {
+const CharacterEdit = () => {
 	const { isEditing, editingState, setEditingState, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleToggle = () => {
 		if (isEditing()) setEditingErrorMessage("Cannot create chapter when editing. Save content first.")
-		else setEditingState({create: !editingState.create})
+		else setEditingState({...editingState, createChapter: !editingState.createChapter})
 	}
 	
 	return (
@@ -22,18 +21,18 @@ const AddChapter = () => {
 			>New Chapter</Button>
 			
 			<Modal 
-				show={editingState.create} 
-				onHide={() => setEditingState({create: true})}
+				show={editingState.createChapter} 
+				onHide={() => setEditingState({...editingState, createChapter: false})}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>Create New Chapter</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<ChapterMetaForm context='create' />
+					{/* <ChapterMetaForm context='create' /> */}
 				</Modal.Body>
 			</Modal>
 		</>
 	)
 }
 
-export default AddChapter
+export default CharacterEdit

@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
-import EditingContext from '../../contexts/EditingContext'
-import SectionMetaForm from '../forms/SectionMetaForm'
+import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 	
-const AddSection = () => {
+const AddGroup = () => {
 	const { isEditing, editingState, setEditingState, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleToggle = () => {
@@ -27,7 +26,7 @@ const AddSection = () => {
 					<Modal.Title>Create New Section</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<SectionMetaForm context='create' />
+					{/* <SectionMetaForm context='create' /> */}
 				</Modal.Body>
 			</Modal>
 			
@@ -35,4 +34,4 @@ const AddSection = () => {
 	)
 }
 
-export default AddSection
+export default AddGroup

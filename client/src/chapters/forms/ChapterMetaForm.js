@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 
 const ChapterMetaForm = ({context}) => {
-	const { selectedChapterData, onChapterCreate, onChapterMetaSave } = useContext(ChapterContext)
-	const { editingState, setEditingState } = useContext(EditingContext)
+	const { selectedChapterData, onChapterCreate, onChapterUpdate } = useContext(ChapterContext)
+	const { setNotEditing, editingState } = useContext(EditingContext)
 	const [chapterData, setChapterData] = useState({
 		...selectedChapterData,
 		id: selectedChapterData ? selectedChapterData.id : '',
@@ -20,12 +20,12 @@ const ChapterMetaForm = ({context}) => {
 	// 		name : '',
 	// 		description : ''
 	// 	})
-	// }, [editingState])
+	// }, [editingState.create])
 	
 	const handleSubmit = () => {
 		context === 'create'
 			? onChapterCreate(chapterData)
-			: onChapterMetaSave(chapterData)
+			: onChapterUpdate(chapterData)
 	}
 	
 	const handleChange = name => e => {
@@ -72,10 +72,7 @@ const ChapterMetaForm = ({context}) => {
 				>Save</Button>
 				<Button 
 					variant="outline-danger" 
-					onClick={ () => (context==='create')
-						? setEditingState({...editingState, createChapter: false}) 
-						: setEditingState({...editingState, meta: false}) 
-					}
+					onClick={ () => setNotEditing() }
 				>Cancel</Button>
 			</Form>
 		</>
