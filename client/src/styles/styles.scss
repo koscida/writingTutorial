@@ -1,5 +1,7 @@
 $primary: #496076;
 $primaryDarken: darken( $primary, 10% );
+$primaryDark: darken( $primary, 20% );
+$primaryLighten: lighten( $primary, 10% );
 $primaryLight: lighten( $primary, 20% );
 $primaryContrast: #ddd;
 
@@ -9,10 +11,12 @@ $active: #99e7c3;
 $activeDarken: darken( $active, 10% );
 $activeDark: darken( $active, 25% );
 $activeLight: lighten( $active, 10% );
+$activeLighten: lighten( $active, 20% );
 $activeContrast: #555;
 
 $danger: #cc858f; //#cc9187;
 $dangerLight: lighten($danger, 20%);
+$dangerLighten: lighten($danger, 10%);
 $dangerDark: darken($danger, 20%);
 $dangerDarken: darken($danger, 10%);
 
@@ -261,8 +265,6 @@ $dangerDarken: darken($danger, 10%);
 				}
 				
 				#sidebarHeader {
-					border-top: 1px solid $primaryLight;
-					border-bottom: 1px solid $primaryLight;
 				}
 				
 				#sidebarContent {
@@ -270,12 +272,13 @@ $dangerDarken: darken($danger, 10%);
 					min-height: 0;
 					width: 100%;
 					overflow-y: auto;
+					padding: 10px;
 					
 					&::-webkit-scrollbar-track {
 						background: $primary;
 					}
 					&::-webkit-scrollbar-thumb {
-						background-color: darken( $primary, 11% );
+						background-color: $primaryDarken;
 					}
 				}
 			}
@@ -306,25 +309,42 @@ $dangerDarken: darken($danger, 10%);
 	// custom styles
 	#list {
 		li {
+			padding-bottom: 10px; 
 			&:hover {
 				cursor: pointer;
 			}
-			&:not(.sections) {
-				padding: 5px 10px;
-			}
-			&.sections {
-				padding-left: 10px;
-			}
 		}
+	}
+	#listAdd {
+		
 	}
 	#listFilter {
 		.filter {
 			position: relative;
-		}
-		.filterBox {
-			background-color: $primary;
-			border: 1px solid $primaryLight;
-			position: absolute;
+			margin-bottom: 10px;
+			
+			.filterBtn {
+				display: inline-block;
+				border: 1px solid $primaryLighten;
+				padding: 5px 10px;
+			}
+			.filterBox {
+				background-color: $primaryLight;
+				border: 1px solid $primaryLighten;
+				position: absolute;
+				padding: 5px 40px 5px 20px;
+				.form-group {
+					margin: 5px 0;
+					.form-check {
+						padding-left: 1.5em;
+					}
+					.form-check-input {
+						margin-top: .4rem;
+						margin-left: -1.5em;
+						transform: scale(1.25);
+					}
+				}
+			}
 		}
 	}
 	

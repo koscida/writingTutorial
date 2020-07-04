@@ -15,32 +15,29 @@ function ChapterList(props) {
 	}
 	
 	return (
-		<>
-			<div id="sidebarHeader" className="p-sm-2">
+		<div id="sidebarContent">
+			<div id="list">
+				<ul key={'test'}>
+					{chapters.map( ({id, name, sections}, idx) => {
+						return (
+							<React.Fragment key={id}>
+								<li 
+									key={id} 
+									onClick={() => handleChapterSelect(id)}
+									className={(selectedChapterData && selectedChapterData.id===id) ? 'active' : ''}
+								>
+									{idx+1}. {name}
+								</li>
+							</React.Fragment>
+						)
+					})}
+				</ul>
+			</div>
+			
+			<div id="listAdd">
 				<AddChapter />
 			</div>
-			<div id="sidebarContent">
-				
-				<div id="list">
-					<ul key={'test'}>
-						{chapters.map( ({id, name, sections}, idx) => {
-							return (
-								<React.Fragment key={id}>
-									<li 
-										key={id} 
-										onClick={() => handleChapterSelect(id)}
-										className={(selectedChapterData && selectedChapterData.id===id) ? 'active' : ''}
-									>
-										{idx+1}. {name}
-									</li>
-								</React.Fragment>
-							)
-						})}
-					</ul>
-				</div>
-				
-			</div>
-		</>
+		</div>
 	)
 }
 

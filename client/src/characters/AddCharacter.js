@@ -3,7 +3,7 @@ import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Modal  from 'react-bootstrap/Modal'
 
-const CharacterEdit = () => {
+const AddCharacter = () => {
 	const { isEditing, editingState, setEditingState, setEditingErrorMessage } = useContext(EditingContext)
 	
 	const handleToggle = () => {
@@ -35,4 +35,4 @@ const CharacterEdit = () => {
 	)
 }
 
-export default CharacterEdit
+export default AddCharacter

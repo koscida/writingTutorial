@@ -9,7 +9,8 @@ class Writing extends React.Component {
 	static contextType = ChapterContext
 	
 	componentDidMount() {
-		this.context.getChapters();
+		document.title = 'Chapters'
+		this.context.getChapters()
 	}
 	
 	render () {

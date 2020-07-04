@@ -6,6 +6,7 @@ class Characters extends React.Component {
 	static contextType = CharacterContext
 	
 	componentDidMount() {
+		document.title = 'Characters'
 		this.context.getCharacters()
 		this.context.getGroups()
 	}
