@@ -13,7 +13,7 @@ class Writing extends React.Component {
 	}
 	
 	render () {
-		const { selectedChapterData, selectedSectionData } = this.context
+		const { selectedChapterData } = this.context
 		
 		return (
 			<div id="contentInner">

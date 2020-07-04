@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 
 import { ChapterContextProvider } from './contexts/ChapterContext'
 import { EditingContextProvider } from './contexts/EditingContext'
+import { CharacterContextProvider } from './contexts/CharacterContext'
 
 import Home from './base/Home'
 import TopNav from './base/TopNav'
@@ -22,6 +23,7 @@ function App() {
 			<div id="content">
 				<EditingContextProvider>
 					<ChapterContextProvider>
+						<CharacterContextProvider>
 						
 							<Switch>
 								<Route path="/" exact component={Home} />
@@ -30,7 +32,8 @@ function App() {
 								<Route path="/themes" component={Themes} />
 								<Route component={Error} />
 							</Switch>
-						
+							
+						</CharacterContextProvider>
 					</ChapterContextProvider>
 				</EditingContextProvider>
 			</div>

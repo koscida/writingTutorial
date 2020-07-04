@@ -1,14 +1,16 @@
 import React from 'react';
 import CharacterList from './CharacterList'
+import CharacterContext from '../contexts/CharacterContext';
 
 class Characters extends React.Component {
+	static contextType = CharacterContext
 	
 	componentDidMount() {
-		
+		this.context.getCharacters()
+		this.context.getGroups()
 	}
 	
 	render () {
-		
 		return (
 			<div id="contentInner">
 				<div id="sidebar">

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import ChapterContext from '../../contexts/ChapterContext'
-import EditingContext from '../../contexts/EditingContext'
+import ChapterContext from '../contexts/ChapterContext'
+import EditingContext from '../contexts/EditingContext'
 import Button from 'react-bootstrap/Button'
 import Form  from 'react-bootstrap/Form'
 

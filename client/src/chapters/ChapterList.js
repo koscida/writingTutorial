@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import ChapterContext from '../contexts/ChapterContext'
 import EditingContext from '../contexts/EditingContext'
-import AddChapter from './modals/AddChapter'
+import AddChapter from './AddChapter'
 
 function ChapterList(props) {
 	const { 
@@ -21,7 +21,7 @@ function ChapterList(props) {
 			</div>
 			<div id="sidebarContent">
 				
-				<div id="chapterList">
+				<div id="list">
 					<ul key={'test'}>
 						{chapters.map( ({id, name, sections}, idx) => {
 							return (

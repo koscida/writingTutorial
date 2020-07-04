@@ -20,45 +20,23 @@ var Chapters = {
 	// 	runQueryResultsHelper(req, res, SELECT_CHAPTERS_AND_SECTIONS, transformChaptersAndSectionsJson)
 	// },
 	getAllChapters: function (req, res) {
-		const SELECT_CHAPTERS = `
+		const SELECT_QUERY = `
 			SELECT c.*
 			FROM tutorial.chapters AS c
 			WHERE c.chapter_deleted = 0
 			ORDER BY c.chapter_order
 		`;
-		runQueryResultsHelper(req, res, SELECT_CHAPTERS, transformChapterJson)
+		runQueryResultsHelper(req, res, SELECT_QUERY, transformChapterJson)
 	},
-	// getAllSections: function (req, res) {
-	// 	const SELECT_SECTIONS = `
-	// 		SELECT * 
-	// 		FROM tutorial.sections 
-	// 		WHERE section_deleted = 0
-	// 		ORDER BY section_order
-	// 	`;
-	// 	runQueryResultsHelper(req, res, SELECT_SECTIONS, transformSectionJson)
-	// },
-	
 	getChapter: (req, res)  => {
-		const id = parseInt(req.params.id)
-		const SELECT_CHAPTER = `
+		const { id } = req.params
+		const SELECT_QUERY = SqlString.format(`
 			SELECT c.*
 			FROM tutorial.chapters as c
-			WHERE c.chapter_id = ${id}
-		`;
-		runQueryResultsHelper(req, res, SELECT_CHAPTER, transformChapterJson)
+			WHERE c.chapter_id = ?
+		`, [id])
+		runQueryResultsHelper(req, res, SELECT_QUERY, transformChapterJson)
 	},
-	// getSection: (req, res)  => {
-	// 	const id = parseInt(req.params.id)
-	// 	const SELECT_SECTION = `
-	// 		SELECT s.*, c.chapter_name
-	// 		FROM tutorial.sections AS s
-	// 		LEFT JOIN tutorial.chapters AS c
-	// 		ON c.chapter_id = s.chapter_id
-	// 		WHERE section_id = ${id}
-	// 	`;
-	// 	// console.log(SELECT_SECTION)
-	// 	runQueryResultsHelper(req, res, SELECT_SECTION, transformSectionJson)
-	// },
 	
 	
 	/*

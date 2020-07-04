@@ -3,22 +3,41 @@ const SqlString = require('sqlstring');
 
 // code started from: http://stayregular.net/blog/make-a-nodejs-api-with-mysql
 //create class
-var Chapters = {
+var Characters = {
 	
 	getAllCharacters: function (req, res) {
-		const SELECT_CHAPTERS = `
+		const SELECT_QUERY = `
 			SELECT c.*
-			FROM tutorial.chapters AS c
-			WHERE c.chapter_deleted = 0
-			ORDER BY c.chapter_order
+			FROM tutorial.characters AS c
+			WHERE c.character_deleted = 0
+			ORDER BY c.character_name
 		`;
-		runQueryResultsHelper(req, res, SELECT_CHAPTERS, transformCharacterJson)
+		runQueryResultsHelper(req, res, SELECT_QUERY, characterModel)
 	},
+	getCharacter: function (req, res) {
+		const { id } = req.params
+		const SELECT_QUERY = SqlString.format(`
+			SELECT c.*
+			FROM tutorial.characters AS c
+			WHERE c.character_id = ?
+		`, [id])
+		runQueryResultsHelper(req, res, SELECT_QUERY, characterModel)
+	},
+	
+	getAllGroups: (req, res) => {
+		const SELECT_QUERY = `
+			SELECT g.*
+			FROM tutorial.groups AS g
+			WHERE g.group_deleted = 0
+			ORDER BY g.group_name
+		`;
+		runQueryResultsHelper(req, res, SELECT_QUERY, groupModel)
+	}
 }
-module.exports = Chapters;
+module.exports = Characters;
 
 
-function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
+function runQueryResultsHelper(req, res, SQL_QUERY, model = null) {
 	console.log(SQL_QUERY)
 	var results = mysqlConnection.query(SQL_QUERY, function (error, results, fields) {
 		// console.log(results)
@@ -42,7 +61,7 @@ function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
 		const resultJson = JSON.parse(JSON.stringify(results));
 		
 		// transform data
-		const modResult = (dataTransform) ? dataTransform(resultJson) : resultJson
+		const modResult = (model) ? transformJsonByModel(resultJson, model) : resultJson
 		
 		//add our JSON results to the data table
 		apiResult.data = modResult;
@@ -53,25 +72,30 @@ function runQueryResultsHelper(req, res, SQL_QUERY, dataTransform = null) {
 	});
 }
 
-function transformCharacterJson(resultJson) {
-	return resultJson.map( chapter => transformCharacterData(chapter) )
-}
-
-function transformCharacterData(c) {
-	const newCharacter = {
-		id 			: (c.character_id) ? parseInt(c.character_id) : null,
-		name 			: (c.character_name) ? c.character_name : '',
-		summary 		: (c.character_summary) ? Buffer.from(s.character_summary.data).toString() : '',
-		headline 	: (c.character_headline) ? c.character_headline : '',
-	}
-	//console.log(newChapter)
-	return newCharacter
+function transformJsonByModel(results, model) {
+	return results.map( resultRow => 
+		Object.entries(model).reduce( (acc, [key, value]) => {
+			let newEntry = ''
+			if(resultRow[value.db]){
+				if(value.type === "int")  newEntry = parseInt(resultRow[value.db])
+				if(value.type === "blob") newEntry = Buffer.from(resultRow[value.db].data).toString()
+				if(value.type === "text") newEntry = resultRow[value.db]
+			}
+			return { ...acc, [key] : newEntry }
+		}, {})
+	)
 }
 
 // omg, stop
 const characterModel = {
 	id 			: { db : 'character_id', 			type: 'int' },
 	name 			: { db : 'character_name', 		type: 'text' },
-	summary 		: { db : 'character_summary',		type: 'text' },
+	summary 		: { db : 'character_summary',		type: 'blob' },
 	headline 	: { db : 'character_headline',	type: 'text' },
+}
+
+const groupModel = {
+	id 			: { db : 'group_id', 			type: 'int' },
+	name 			: { db : 'group_name', 			type: 'text' },
+	description : { db : 'group_description',	type: 'blob' },
 }

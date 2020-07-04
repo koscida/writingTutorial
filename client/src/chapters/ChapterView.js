@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import ChapterContext from '../contexts/ChapterContext'
 import EditingContext from '../contexts/EditingContext'
-import ChapterMetaForm from './forms/ChapterMetaForm'
+import ChapterMetaForm from './ChapterMetaForm'
 import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Tabs from 'react-bootstrap/Tabs'

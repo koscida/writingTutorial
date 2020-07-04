@@ -22,6 +22,18 @@ export const EditingContextProvider = (props) => {
 	
 	
 	/* 
+	 * Editing state
+	 */
+	const isEditing = () => {
+		return Object.values(editingState).some( e => e )
+	}
+	
+	const setNotEditing = () => 
+		setEditingState( Object.keys(editingState).reduce( (a,k) => a = {...a, [k]:false}, {} ) )
+	
+	
+	
+	/* 
 	 * Alerts
 	 * messages only, errors or successes
 	 */
@@ -41,13 +53,6 @@ export const EditingContextProvider = (props) => {
 		return () => clearTimeout(timer);
 	}, [alertState])
 	
-	const isEditing = () => {
-		return Object.values(editingState).some( e => e )
-	}
-	
-	const setNotEditing = () => 
-		setEditingState( Object.keys(editingState).reduce( (a,k) => a = {...a, [k]:false}, {} ) )
-	
 	
 	
 	/*
@@ -55,7 +60,7 @@ export const EditingContextProvider = (props) => {
 	 * must confirm/cancel action
 	 */
 	const setConfirmation = (message, confirm) => {
-		setAlertState({
+		setConfirmationState({
 			...confirmationState,
 			isShown: true,
 			message, 
@@ -63,7 +68,7 @@ export const EditingContextProvider = (props) => {
 		})
 	}
 	
-	const deleteConfirmation = () => setAlertState({
+	const deleteConfirmation = () => setConfirmationState({
 		...confirmationState, 
 		isShown: false,
 		message: '', 
@@ -84,15 +89,15 @@ export const EditingContextProvider = (props) => {
 	
 	const renderConfirmation = () => {
 		return (
-			<Alert show={alertState.isShown} variant="warning">
+			<Alert show={confirmationState.isShown} variant="warning">
 				<Alert.Heading>Warning</Alert.Heading>
-				<p>{alertState.message}</p>
+				<p>{confirmationState.message}</p>
 				<hr />
 				<div className="d-flex justify-content-end">
-					<Button onClick={() => alertState.cancel()} variant="outline-primary" className="mr-2">
+					<Button onClick={() => confirmationState.cancel()} variant="outline-primary" className="mr-2">
 						Cancel
 					</Button>
-					<Button onClick={() => alertState.confirm()} variant="danger">
+					<Button onClick={() => confirmationState.confirm()} variant="danger">
 						Confirm
 					</Button>
 				</div>
@@ -105,7 +110,7 @@ export const EditingContextProvider = (props) => {
 	return(
 		<>
 			<EditingContext.Provider value={{
-				isEditing, editingState, setEditingState, setNotEditing,
+				editingState, isEditing, setEditingState, setNotEditing,
 				setEditingErrorMessage, setEditingSuccessMessage, 
 				setConfirmation, deleteConfirmation,
 			}}>

@@ -304,7 +304,7 @@ $dangerDarken: darken($danger, 10%);
 	
 	
 	// custom styles
-	#chapterList {
+	#list {
 		li {
 			&:hover {
 				cursor: pointer;
@@ -315,6 +315,16 @@ $dangerDarken: darken($danger, 10%);
 			&.sections {
 				padding-left: 10px;
 			}
+		}
+	}
+	#listFilter {
+		.filter {
+			position: relative;
+		}
+		.filterBox {
+			background-color: $primary;
+			border: 1px solid $primaryLight;
+			position: absolute;
 		}
 	}
 	

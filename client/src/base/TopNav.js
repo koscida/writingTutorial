@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
@@ -8,25 +8,19 @@ const TopNav = () => {
 	return (
 		<Navbar bg="dark" expand="lg" variant="dark">
 		
-			<Navbar.Brand as={Link} to="/">NaNoWriMo Helper</Navbar.Brand>
+			<Navbar.Brand as={NavLink} to="/">NaNoWriMo Helper</Navbar.Brand>
 			
 			<Navbar.Toggle aria-controls="basic-navbar-nav" />
 			<Navbar.Collapse id="basic-navbar-nav">
 				<Nav>
 					<Nav.Item>
-						<Nav.Link>
-							<NavLink to="/chapters" activeClassName="active">Chapters</NavLink>
-						</Nav.Link>
+						<NavLink to="/chapters" activeClassName="active" className="nav-link">Chapters</NavLink>
 					</Nav.Item>
 					<Nav.Item>
-						<Nav.Link>
-							<NavLink to="/characters" activeClassName="active">Characters</NavLink>
-						</Nav.Link>
+						<NavLink to="/characters" activeClassName="active" className="nav-link">Characters</NavLink>
 					</Nav.Item>
 					<Nav.Item>
-						<Nav.Link>
-							<NavLink to="/themes" activeClassName="active">Themes</NavLink>
-						</Nav.Link>
+						<NavLink to="/themes" activeClassName="active" className="nav-link">Themes</NavLink>
 					</Nav.Item>
 				</Nav>
 			</Navbar.Collapse>
