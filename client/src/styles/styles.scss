@@ -268,7 +268,7 @@ $dangerDarken: darken($danger, 10%);
 				}
 				
 				#sidebarContent {
-					height: auto;
+					height: 100%;
 					min-height: 0;
 					width: 100%;
 					overflow-y: auto;
@@ -309,7 +309,7 @@ $dangerDarken: darken($danger, 10%);
 	// custom styles
 	#list {
 		li {
-			padding-bottom: 10px; 
+			padding-bottom: 5px; 
 			&:hover {
 				cursor: pointer;
 			}
@@ -327,12 +327,18 @@ $dangerDarken: darken($danger, 10%);
 				display: inline-block;
 				border: 1px solid $primaryLighten;
 				padding: 5px 10px;
+				
+				span {
+					margin-left: 0.5rem;
+				}
 			}
 			.filterBox {
 				background-color: $primaryLight;
 				border: 1px solid $primaryLighten;
 				position: absolute;
-				padding: 5px 40px 5px 20px;
+				padding: 5px 20px;
+				width: 100%;
+				
 				.form-group {
 					margin: 5px 0;
 					.form-check {
