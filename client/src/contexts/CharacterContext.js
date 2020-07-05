@@ -69,13 +69,38 @@ export const CharacterContextProvider = (props) => {
 	}
 	
 	
+	/*
+	 * Character functions
+	 */
+	const onCharacterCreate = newCharacter => {
+		
+	}
+	
+	const onCharacterUpdate = updatedCharacter => {
+		
+	}
+	 
+	 
+	 
+	/*
+	 * Group Functions
+	 */
+	const onGroupCreate = newGroup => {
+		
+	}
+	
+	const onGroupUpdate = updatedGroup => {
+		
+	}
+	
 	
 	return (
 		<>
 			<CharacterContext.Provider value={{ 
 				characters, getCharacters,
 				groups, getGroups, 
-				selectedCharacterData, onCharacterSelect,
+				selectedCharacterData, onCharacterSelect, onCharacterCreate, onCharacterUpdate,
+				onGroupCreate, onGroupUpdate,
 			}}>
 				{ props.children }
 			</CharacterContext.Provider>

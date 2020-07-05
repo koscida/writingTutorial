@@ -7,9 +7,12 @@ var Characters = {
 	
 	getAllCharacters: function (req, res) {
 		const SELECT_QUERY = `
-			SELECT c.*
+			SELECT c.*, GROUP_CONCAT(ctg.group_id) AS groupIds
 			FROM tutorial.characters AS c
+			LEFT JOIN tutorial.characters_to_groups as ctg 
+				ON c.character_id = ctg.character_id
 			WHERE c.character_deleted = 0
+			GROUP BY c.character_id
 			ORDER BY c.character_name
 		`;
 		runQueryResultsHelper(req, res, SELECT_QUERY, characterModel)
@@ -73,17 +76,21 @@ function runQueryResultsHelper(req, res, SQL_QUERY, model = null) {
 }
 
 function transformJsonByModel(results, model) {
-	return results.map( resultRow => 
+	let newresults = results.map( resultRow => 
 		Object.entries(model).reduce( (acc, [key, value]) => {
+			const resultEntry = resultRow[value.db]
 			let newEntry = ''
-			if(resultRow[value.db]){
-				if(value.type === "int")  newEntry = parseInt(resultRow[value.db])
-				if(value.type === "blob") newEntry = Buffer.from(resultRow[value.db].data).toString()
-				if(value.type === "text") newEntry = resultRow[value.db]
+			if(resultEntry){
+				if(value.type === "int")  newEntry = parseInt(resultEntry)
+				if(value.type === "blob") newEntry = Buffer.from(resultEntry.data).toString()
+				if(value.type === "text") newEntry = resultEntry
+				if(value.type === "arrayInt") newEntry = resultEntry.split(",").map( r => parseInt(r) )
 			}
 			return { ...acc, [key] : newEntry }
 		}, {})
 	)
+	
+	return newresults
 }
 
 // omg, stop
@@ -92,6 +99,7 @@ const characterModel = {
 	name 			: { db : 'character_name', 		type: 'text' },
 	summary 		: { db : 'character_summary',		type: 'blob' },
 	headline 	: { db : 'character_headline',	type: 'text' },
+	groupIds 	: { db : 'groupIds',					type: 'arrayInt' },
 }
 
 const groupModel = {

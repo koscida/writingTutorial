@@ -17,6 +17,7 @@ const AddGroup = () => {
 				variant="light" 
 				onClick={handleToggle}
 				size="sm"
+				className="mr-sm-2 mb-sm-2"
 			>New Section</Button>
 			<Modal 
 				show={editingState.createSection} 

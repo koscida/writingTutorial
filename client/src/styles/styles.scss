@@ -89,6 +89,26 @@ $dangerDarken: darken($danger, 10%);
 	}
 	
 	
+	// overwrite forms
+	.form-check {
+		padding-left: 1.5em;
+		
+		.form-check-input {
+			margin-top: .4rem;
+			margin-left: -1.5rem;
+			transform: scale(1.25);
+		}
+	}
+	.form-check-inline {
+		align-items: baseline;
+		.form-check-input {
+			position: relative;
+			margin-right: 0.5rem;
+		}
+	}
+	
+	
+	
 	// overwrite navigation
 	.navbar {
 		padding: 0;
@@ -341,14 +361,6 @@ $dangerDarken: darken($danger, 10%);
 				
 				.form-group {
 					margin: 5px 0;
-					.form-check {
-						padding-left: 1.5em;
-					}
-					.form-check-input {
-						margin-top: .4rem;
-						margin-left: -1.5em;
-						transform: scale(1.25);
-					}
 				}
 			}
 		}

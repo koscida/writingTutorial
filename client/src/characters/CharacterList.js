@@ -133,8 +133,8 @@ const CharacterList = () => {
 										</div>
 									</Form.Group>
 								)}
-								<Button onClick={clearGroupFilter} size="sm" className="mr-2">Clear</Button>
-								<Button onClick={toggleGroupFilter} size="sm">Apply</Button>
+								<Button onClick={clearGroupFilter} size="sm" className="mr-sm-2 mb-sm-2">Clear</Button>
+								<Button onClick={toggleGroupFilter} size="sm" className="mr-sm-2 mb-sm-2">Apply</Button>
 							</div>
 						: null
 					}

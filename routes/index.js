@@ -10,7 +10,10 @@ Router.use("/", HomeRoute)
 
 // Writing
 Router.use('/chapter/', ChaptersRoutes)
+Router.use('/chapters/', ChaptersRoutes)
+
 Router.use('/character/', CharactersRoutes)
+Router.use('/characters/', CharactersRoutes)
 
 
 module.exports = Router;
